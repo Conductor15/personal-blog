@@ -21,7 +21,7 @@ const BlogPost = () => {
   useEffect(()=> {
     const fetchPost = async () =>{
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${slug}/client`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/client/${slug}`);
         const data = await res.json()
         setPost(data);
 

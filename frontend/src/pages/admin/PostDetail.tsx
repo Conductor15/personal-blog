@@ -221,7 +221,7 @@ export default function PostDetail() {
                   Chỉnh sửa bài viết
                 </Button>
               </Link>
-              <Link to={`/blogs/${post.slug}`} className="block">
+              <Link to={`/blog/${post.slug}`} className="block">
                 <Button variant="outline" className="w-full justify-start gap-2">
                   <Eye className="h-4 w-4" />
                   Xem trên blog

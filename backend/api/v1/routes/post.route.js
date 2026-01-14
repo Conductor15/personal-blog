@@ -6,6 +6,7 @@ const controller = require("../controllers/post.controller");
 router.get("/client" ,controller.indexClient);
 router.get("/admin" ,controller.indexAdmin);
 router.get("/:slug" ,controller.detail);
+router.get("/client/:slug" ,controller.detailClient);
 router.post("/create" ,controller.create);
 
 router.patch("/:slug" ,controller.delete);

@@ -34,7 +34,7 @@ export default function PostEdit() {
   useEffect(()=> {
     const fetchPost = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/posts/${slug}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${slug}`);
         const data = await res.json();
         setPost(data);
       } catch (error) {
@@ -56,7 +56,7 @@ export default function PostEdit() {
 
 
   useEffect(()=>{
-    fetch('http://localhost:8000/api/v1/categories')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`)
     .then(res => res.json())
     .then(data => {
       setCatList(data);
@@ -103,7 +103,7 @@ export default function PostEdit() {
     };
 
     try {
-      const res = await fetch(`http://localhost:8000/api/v1/posts/${slug}/edit`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${slug}/edit`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
