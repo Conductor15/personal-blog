@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import api from "@/lib/axios"
 
 export default function Dashboard() {
 
@@ -14,9 +15,8 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/dashboard`);
-        const data = await res.json();
-        setDashboardData(data);
+        const res = await api.get("/api/v1/dashboard");
+        setDashboardData(res.data);
       } catch (error) {
         console.error("Error fetching:", error);
       }
@@ -65,21 +65,8 @@ export default function Dashboard() {
           icon={Eye}
           trend={{ value: dashboardData.views.trend.value, isPositive: dashboardData.views.trend.isPositive }}
         />
-        {/* <StatCard
-          title="Người đọc"
-          value="3,241"
-          icon={Users}
-          trend={{ value: 5, isPositive: true }}
-        />
-        <StatCard
-          title="Tỉ lệ tương tác"
-          value="4.2%"
-          icon={TrendingUp}
-          trend={{ value: -2, isPositive: false }}
-        /> */}
       </div>
 
-      {/* Recent Posts */}
       <RecentPosts />
     </AdminLayout>
   );

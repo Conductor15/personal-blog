@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,17 +15,36 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Fake login - replace with real authentication later
-    setTimeout(() => {
-      if (email === "admin@example.com" && password === "admin123") {
-        localStorage.setItem("isAdminLoggedIn", "true");
-        toast.success("Đăng nhập thành công!");
-        navigate("/admin");
-      } else {
-        toast.error("Email hoặc mật khẩu không đúng!");
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Đăng nhập thất bại");
       }
+
+      // lưu token
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      toast.success("Đăng nhập thành công!");
+      navigate("/admin");
+    } catch (error: any) {
+      toast.error(error.message || "Có lỗi xảy ra");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+    
   };
 
   return (

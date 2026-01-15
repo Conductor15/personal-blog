@@ -2,7 +2,6 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -15,6 +14,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { RichTextEditor } from "@/components/admin/RichTextEditter";
+import api from "@/lib/axios";
+import { uploadImage } from "@/lib/uploadImage";
 
 
 export default function NewPost() {
@@ -24,40 +25,20 @@ export default function NewPost() {
   const [category, setCategory] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(import.meta.env.VITE_DEFAULT_IMG);
   const [uploading, setUploading] = useState(false);
-
-  const [catList, setCatList] = useState([])
+  const [catList, setCatList] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(()=>{
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`)
-    .then(res => res.json())
-    .then(data => {
-      setCatList(data);
-    })
-    .catch(err => console.error('Error fetching categories:', err));
-  },[])
-
-  const navigate = useNavigate()
-
-  async function uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-
-    setUploading(true);
-
-    const res = await fetch(
-      `${import.meta.env.VITE_CLOUDINARY_API_URL}/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formData,
+    const fetchCategory = async () => {
+      try {
+        const res = await api.get("/api/v1/categories");
+        setCatList(res.data)
+      } catch (error) {
+         console.error("Fetch categories error:", error);
       }
-    );
-
-    const data = await res.json();
-    setUploading(false);
-
-    return data.secure_url;
-  }
+    }
+    fetchCategory();
+  },[])
 
 
   async function handleSubmit(publish: boolean) {
@@ -76,16 +57,7 @@ export default function NewPost() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}` nếu có auth
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Tạo bài viết thất bại");
+      await api.post("/api/v1/posts/create", payload);
 
       if (publish) {
         toast({
@@ -192,7 +164,10 @@ export default function NewPost() {
                   return;
                 };
 
+                setUploading(true);
                 const url = await uploadImage(file);
+                setUploading(false);
+
                 setThumbnailUrl(url);
               }}
               />

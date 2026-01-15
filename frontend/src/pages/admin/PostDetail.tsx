@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit, Trash2, Eye, Calendar, BarChart3 } from "lucide-react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,24 +16,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { formatDate } from "@/lib/formatDate";
+import api from "@/lib/axios";
 
 
-const categoryColors: Record<string, string> = {
-  Lifestyle: "badge-lifestyle",
-  Wellness: "badge-wellness",
-  Travel: "badge-travel",
-  Fashion: "badge-fashion",
-  Nutrition: "badge-nutrition",
-  Interior: "badge-interior",
-};
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 export default function PostDetail() {
   const { slug } = useParams();
@@ -45,9 +30,8 @@ export default function PostDetail() {
   useEffect(()=>{
     const postFetch = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${slug}`);
-        const data = await res.json();
-        setPost(data);
+        const res = await api.get(`/api/v1/posts/${slug}`)
+        setPost(res.data);
       } catch (error) {
         console.error("Error fetching:", error);
       }
@@ -74,16 +58,7 @@ export default function PostDetail() {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${post.slug}`,
-        {
-          method: "PATCH",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Delete failed");
-      }
+      await api.patch(`/api/v1/posts/${post.slug}`)
 
       toast({
         title: "Đã xóa bài viết",

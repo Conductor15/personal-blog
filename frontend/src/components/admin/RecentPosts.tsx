@@ -1,35 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, Eye } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "@/lib/axios";
 
-interface Post {
-  id: number;
-  title: string;
-  category: string;
-  status: "published" | "draft";
-  date: string;
-  views: number;
-}
-
-const posts: Post[] = [
-  { id: 1, title: "Every strike brings me closer to the next", category: "Lifestyle", status: "published", date: "2024-01-05", views: 1234 },
-  { id: 2, title: "Life is a flower of which love is the honey", category: "Wellness", status: "published", date: "2024-01-04", views: 856 },
-  { id: 3, title: "Sheets containing Ipsum passages & more", category: "Travel", status: "draft", date: "2024-01-03", views: 0 },
-  { id: 4, title: "Finding beauty in everyday moments", category: "Fashion", status: "published", date: "2024-01-02", views: 2341 },
-  { id: 5, title: "The art of mindful living", category: "Nutrition", status: "published", date: "2024-01-01", views: 567 },
-];
-
-const categoryColors: Record<string, string> = {
-  Lifestyle: "badge-lifestyle",
-  Wellness: "badge-wellness",
-  Travel: "badge-travel",
-  Fashion: "badge-fashion",
-  Nutrition: "badge-nutrition",
-  Interior: "badge-interior",
-};
 
 export function RecentPosts() {
 
@@ -39,18 +14,14 @@ export function RecentPosts() {
   useEffect(()=> {
     const fetchPost = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/admin`);
-        const data = await res.json();
-        setPostList(data);
+        const res = await api.get("/api/v1/posts/admin");
+        setPostList(res.data);
       } catch (error) {
          console.error("Error fetching:", error);
       }
     }
-
     fetchPost();
   }, [])
-
-  
 
   return (
     <div className="table-container">
