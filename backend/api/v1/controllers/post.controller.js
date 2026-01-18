@@ -1,12 +1,12 @@
 const Post = require("../models/post.model")
 const Category = require("../models/category.model")
 
-///api/v1/posts/client/top-viewed?limit=3
+///api/v1/posts/client/top-viewed=3
 module.exports.indexClient = async (req, res) => {
     try {
-        const topViewed = req.query.topViewed
+        const topViewed = req.query.topViewed;
         if(topViewed){
-            const posts = await Post.find({deleted: false, status: 'published'}).sort({ views: -1 });
+            const posts = await Post.find({deleted: false, status: 'published'}).sort({ views: -1 }).limit(topViewed);;
             res.status(200).json(posts);
             return;
         }
@@ -14,15 +14,6 @@ module.exports.indexClient = async (req, res) => {
         const posts = await Post.find({deleted: false, status: 'published'}).sort({ createdAt: -1 });
         res.status(200).json(posts);
 
-
-    //     const limit = Number(req.query.limit) || null;
-
-    // const posts = await Post.find({
-    //   deleted: false,
-    //   status: "published"
-    // })
-    //   .sort({ views: -1 })   
-    //   .limit(limit)
     } catch (error) {
         res.json({message: error.message})
     }

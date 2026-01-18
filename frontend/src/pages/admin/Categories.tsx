@@ -2,7 +2,6 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -25,16 +24,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { uploadImage } from "@/lib/uploadImage";
+import api from "@/lib/axios";
 
 
 export default function Categories() {
@@ -46,40 +41,25 @@ export default function Categories() {
   const [open, setOpen] = useState(false);
 
   
-
-
   const toCloudinary16x9 = (url: string) =>
     url.replace("/upload/", "/upload/ar_16:9,c_fill,g_auto/");
 
-  async function uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-
-    setUploading(true);
-
-    const res = await fetch(
-      `${import.meta.env.VITE_CLOUDINARY_API_URL}/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    const data = await res.json();
-    setUploading(false);
-
-    return data.secure_url;
-  }
 
   async function handleSubmit() {
     if (!name) {
-      alert("Tên danh mục không được trống");
+      toast({
+        variant: "destructive",
+        title: "Thiếu thông tin",
+        description: "Tên danh mục không được để trống",
+      });
       return;
     }
-
     if (!image) {
-      alert("Vui lòng upload thumbnail");
+      toast({
+        variant: "destructive",
+        title: "Thiếu thông tin",
+        description: "Vui lòng upload thumbnail",
+      });
       return;
     }
 
@@ -89,64 +69,51 @@ export default function Categories() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}` nếu có auth
-        },
-        body: JSON.stringify(payload),
+      const res = await api.post("/api/v1/categories/create",payload);
+
+      const { category } = res.data;
+
+      toast({
+        title: "Tạo category thành công",
+        description: `Danh mục "${name}" đã được tạo.`,
+        className: "border-l-4 border-success"
       });
-
-      if(res.ok){
-        // alert("Tạo category thành công");
-        toast({
-          title: "Tạo category thành công",
-          description: `Danh mục "${name}" đã được tạo.`,
-          className: "border-l-4 border-success"
-        });
-        // window.location.reload();
-        const data = await res.json();
-        // console.log(data.category)
-        setCategory(prev => [...prev,data.category]);
-        setOpen(false);
-        setName("")
-        setImage(import.meta.env.VITE_DEFAULT_IMG)
-        return;
-      }
-      const data = await res.json();
-      alert(data.message);
-
-      
+  
+      setCategory(prev => [...prev,category]);
+      setOpen(false);
+      setName("")
+      setImage(import.meta.env.VITE_DEFAULT_IMG)
+      return;  
     } catch (err) {
       console.error(err);
-      alert("Có lỗi xảy ra");
+      toast({
+        variant: "destructive",
+        title: "Tạo category thất bại",
+        description:
+          err.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+      });
     }
   }
   
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`)
-    .then(res => res.json())
-    .then(data => {
-      setCategory(data);
-      // console.log(data[0])
-    })
-    .catch(err => console.error('Error fetching categories:', err));
+    const fetchCategory = async () => {
+      try {
+        const res = await api.get("/api/v1/categories");
+        setCategory(res.data);
+      } catch (error) {
+          console.error("Fetch categories error:", error);
+      }
+    }
+
+    fetchCategory();
   }, []);
 
   const handleDelete = async (categorySlug : string, categoryName: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/categories/${categorySlug}`,{
-        method: "PATCH"
-      })
+      await api.patch(`/api/v1/categories/${categorySlug}`);
 
-      const data = await res.json()
-
-      if(!res.ok){
-        throw new Error(data.message || "Delete failed");
-      }
       setCategory(prev => prev.filter(c => c.slug !== categorySlug));
+
       toast({
         title: "Đã xóa",
         description: `Danh mục "${categoryName}" đã được xóa.`,
@@ -157,7 +124,7 @@ export default function Categories() {
       toast({
         variant: "destructive",
         title: "Xóa thất bại",
-        description: error.message
+        description: error.response?.data?.message
       });
     }
   }
@@ -211,7 +178,9 @@ export default function Categories() {
                     const file = e.target.files?.[0];
                     if (!file) return;
 
+                    setUploading(true)
                     const url = await uploadImage(file);
+                    setUploading(false)
                     setImage(url);
                   }}
                 />

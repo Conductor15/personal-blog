@@ -2,14 +2,10 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
+import { formatDate } from "@/lib/formatDate";
+import api from "@/lib/axios";
+import { toast } from "@/hooks/use-toast";
 
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -21,23 +17,31 @@ const Blog = () => {
   useEffect(()=> {
     const fetchCategory = async () =>{
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`);
-        const data = await res.json()
-        setCategories(data);
+        const res = await api.get(`/api/v1/categories`);
+        setCategories(res.data);
 
       } catch (error) {
-        console.error("Error fetching:", error);
+        toast({
+          variant: "destructive",
+          title: "Tải danh mục thất bại",
+          description:
+            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        });
       }
     };
 
     const fetchPost = async () =>{
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/client`);
-        const data = await res.json()
-        setPosts(data);
+        const res = await api.get(`/api/v1/posts/client`);
+        setPosts(res.data);
 
       } catch (error) {
-        console.error("Error fetching:", error);
+        toast({
+          variant: "destructive",
+          title: "Tải bài viết thất bại",
+          description:
+            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        });
       }
     };
 

@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();    
 const controller = require("../controllers/post.controller");
-
+const authMiddleware = require("../middlewares/auth.middleware")
 
 router.get("/client" ,controller.indexClient);
-router.get("/admin" ,controller.indexAdmin);
+router.get("/admin" ,authMiddleware.requireAuth, controller.indexAdmin);
 router.get("/:slug" ,controller.detail);
 router.get("/client/:slug" ,controller.detailClient);
-router.post("/create" ,controller.create);
+router.post("/create" ,authMiddleware.requireAuth, controller.create);
 
-router.patch("/:slug" ,controller.delete);
-router.patch("/:slug/edit" ,controller.edit);
+router.patch("/:slug" , authMiddleware.requireAuth, controller.delete);
+router.patch("/:slug/edit" , authMiddleware.requireAuth, controller.edit);
 
 
 

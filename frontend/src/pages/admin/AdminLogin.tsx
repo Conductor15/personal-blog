@@ -1,41 +1,34 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { AuthContext } from "@/contexts/AuthContext";
+import api from "@/lib/axios";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { setAuth } = useContext(AuthContext);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Đăng nhập thất bại");
-      }
-
+      const payload = { email, password }
+      const res = await api.post("/api/v1/auth/login",payload)
       // lưu token
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("access_token", res.data.access_token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      setAuth({
+        isAuthenticated: true,
+        user: res.data.user,
+      });
 
       toast.success("Đăng nhập thành công!");
       navigate("/admin");

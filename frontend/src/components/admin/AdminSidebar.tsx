@@ -14,9 +14,10 @@ import {
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { cn } from "@/lib/utils";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "@/contexts/AuthContext";
 
 const menuItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
@@ -40,6 +41,9 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const location = useLocation();
+  const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [showPageSettings, setShowPageSettings] = useState(
     location.pathname.startsWith('/admin/settings/')
   );
@@ -48,6 +52,19 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   useEffect(() => {
     onClose();
   }, [location.pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("auth_user");
+
+    setAuth({
+      isAuthenticated: false,
+      user: null,
+    });
+
+    navigate("/admin/login");
+  }
 
   return (
     <>
@@ -144,7 +161,8 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         {/* Footer */}
         <div className="absolute bottom-4 left-0 right-0 px-3">
           <Button 
-            variant="ghost" 
+            variant="ghost"
+            onClick={handleLogout}
             className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
           >
             <LogOut className="h-5 w-5" />

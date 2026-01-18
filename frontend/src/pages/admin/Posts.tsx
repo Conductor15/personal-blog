@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select";
 import { Plus, Search, Edit, Trash2, Eye, MoreHorizontal } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,15 +30,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { formatDate } from "@/lib/formatDate";
+import api from "@/lib/axios";
 
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 
 export default function Posts() {
@@ -70,18 +63,16 @@ export default function Posts() {
   useEffect(()=>{
     const postListFetch = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/admin`);
-        const data = await res.json();
-        setPostList(data);
+        const res = await api.get("/api/v1/posts/admin")
+        setPostList(res.data);
       } catch (error) {
         console.error("Error fetching:", error);
       }
     };
     const categoryListFetch = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`);
-        const data = await res.json();
-        setCategoryList(data);
+        const res = await api.get("/api/v1/categories")
+        setCategoryList(res.data);
       } catch (error) {
         console.error("Error fetching:", error);
       }
@@ -92,16 +83,7 @@ export default function Posts() {
 
   const handleDelete = async (postSlug: string, postTitle: string) => {
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${postSlug}`,
-        {
-          method: "PATCH",
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error("Delete failed");
-      }
+      await api.patch(`/api/v1/posts/${postSlug}`)
 
       setPostList(prev => prev.filter((p: any) => p.slug !== postSlug));
 

@@ -1,9 +1,7 @@
 import CategoryCard from "./CategoryCard";
-import lifestyleImg from "@/assets/article-lifestyle.jpg";
-import nutritionImg from "@/assets/article-nutrition.jpg";
-import fashionImg from "@/assets/article-fashion.jpg";
-import interiorImg from "@/assets/article-interior.jpg";
 import { useEffect, useState } from "react";
+import api from "@/lib/axios";
+import { toast } from "@/hooks/use-toast";
 
 
 const CategoriesSection = () => {
@@ -12,12 +10,16 @@ const CategoriesSection = () => {
   useEffect(()=> {
     const fetchCategory = async () =>{
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`);
-        const data = await res.json()
-        setCategories(data);
+        const res = await api.get("/api/v1/categories");
+        setCategories(Array.isArray(res.data.data) ? res.data.data : []);
 
       } catch (error) {
-        console.error("Error fetching:", error);
+        toast({
+          variant: "destructive",
+          title: "Lỗi tải danh mục",
+          description:
+            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        });
       }
     };
 

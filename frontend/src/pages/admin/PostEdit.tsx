@@ -2,7 +2,6 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -15,6 +14,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { RichTextEditor } from "@/components/admin/RichTextEditter";
+import api from "@/lib/axios";
+import { uploadImage } from "@/lib/uploadImage";
 
 
 export default function PostEdit() {
@@ -25,24 +26,31 @@ export default function PostEdit() {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>("https://res.cloudinary.com/dthfpkcji/image/upload/v1768054406/lnshomnr14ks4tysxilz.jpg");
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(import.meta.env.VITE_DEFAULT_IMG);
   const [uploading, setUploading] = useState(false);
 
   const [catList, setCatList] = useState([])
   const navigate = useNavigate()
 
   useEffect(()=> {
+    if (!slug) return;
+
     const fetchPost = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${slug}`);
-        const data = await res.json();
-        setPost(data);
+        const res = await api.get(`/api/v1/posts/${slug}`)
+        setPost(res.data);
       } catch (error) {
-        console.error("Error fetching:", error);
+        toast({
+          variant: "destructive",
+          title: "Lỗi tải bài viết",
+          description:
+            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        });
+        // navigate("/admin/posts");
       }
     }
     fetchPost();
-  },[])
+  },[slug])
 
   useEffect(() => {
     if (!post) return;
@@ -55,41 +63,34 @@ export default function PostEdit() {
   }, [post]);
 
 
-  useEffect(()=>{
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/categories`)
-    .then(res => res.json())
-    .then(data => {
-      setCatList(data);
-    })
-    .catch(err => console.error('Error fetching categories:', err));
-  },[])
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get("/api/v1/categories");
+        setCatList(res.data);
+      } catch (error: any) {
+        console.error("Error fetching categories:", error);
 
-
-  async function uploadImage(file: File) {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-
-    setUploading(true);
-
-    const res = await fetch(
-      `${import.meta.env.VITE_CLOUDINARY_API_URL}/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formData,
+        toast({
+          variant: "destructive",
+          title: "Lỗi tải danh mục",
+          description:
+            error.response?.data?.message || "Không thể tải danh mục",
+        });
       }
-    );
+    };
 
-    const data = await res.json();
-    setUploading(false);
-
-    return data.secure_url;
-  }
+    fetchCategories();
+  }, []);
 
 
   async function handleSubmit(publish: boolean) {
     if (!title || !content) {
-      alert("Tiêu đề và nội dung không được trống");
+      toast({
+        variant: "destructive",
+        title: "Thiếu thông tin",
+        description: "Tiêu đề và nội dung không được để trống",
+      });
       return;
     }
 
@@ -103,38 +104,27 @@ export default function PostEdit() {
     };
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/${slug}/edit`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}` nếu có auth
-        },
-        body: JSON.stringify(payload),
+      await api.patch(`/api/v1/posts/${slug}/edit`, payload);
+
+      toast({
+        title: publish ? "Xuất bản thành công" : "Lưu nháp thành công",
+        description: publish
+          ? "Bài viết đã được chỉnh sửa và xuất bản"
+          : "Bạn có thể chỉnh sửa và đăng sau",
+        className: "border-l-4 border-success",
       });
 
-      if (!res.ok) throw new Error("Sửa bài viết thất bại");
-
-      if (publish) {
-        toast({
-          title: "Sửa bài viết thành công",
-          description: "Bài viết đã được chỉnh sửa",
-          className: "border-l-4 border-success"
-        });
-      } else {
-        toast({
-          title: "Lưu nháp thành công",
-          description: "Bạn có thể chỉnh sửa và đăng sau",
-          className: "border-l-4 border-success"
-        });
-      }
       navigate("/admin/posts")
-    } catch (err) {
-      console.error(err);
-      alert("Có lỗi xảy ra");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Sửa bài viết thất bại",
+        description:
+          error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+      });
     }
   }
 
-  
 
   return (
     <AdminLayout>
@@ -215,8 +205,11 @@ export default function PostEdit() {
                 if (!file) {
                   return;
                 };
-
+                
+                setUploading(true)
                 const url = await uploadImage(file);
+                setUploading(false)
+                
                 setThumbnailUrl(url);
               }}
               />

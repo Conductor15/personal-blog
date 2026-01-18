@@ -11,7 +11,7 @@ interface SearchDialogProps {
 
 const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Article[]>([]);
+  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {

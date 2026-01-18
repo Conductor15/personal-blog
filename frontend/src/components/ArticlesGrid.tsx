@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
-import { articles } from "@/data/articles";
+import { formatDate } from "@/lib/formatDate";
+import api from "@/lib/axios";
+import { toast } from "@/hooks/use-toast";
 
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 const ArticlesGrid = () => {
   const [posts, setPosts] = useState([]);
   useEffect(()=> {
     const fetchPosts = async () =>{
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/client?topViewed=3`);
-        const data = await res.json()
-        setPosts(data);
+        const res = await api.get("/api/v1/posts/client?topViewed=3")
+        setPosts(res.data);
 
       } catch (error) {
-        console.error("Error fetching:", error);
+        toast({
+          variant: "destructive",
+          title: "Lỗi tải bài viết",
+          description:
+            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        });
       }
     };
 
@@ -43,10 +42,10 @@ const ArticlesGrid = () => {
           {posts.map((article) => (
             <ArticleCard 
               key={article._id}
-              id={article._id}
+              slug={article.slug}
               image={article.image}
-              category={article.categoryId.name}
-              title={article.name}
+              category={article.categoryId?.name}
+              title={article.title}
               author="Tran"
               date={formatDate(article.createdAt)}
             />

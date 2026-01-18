@@ -5,6 +5,7 @@ import CategoriesSection from "@/components/CategoriesSection";
 import ArticlesGrid from "@/components/ArticlesGrid";
 import Footer from "@/components/Footer";
 
+
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">

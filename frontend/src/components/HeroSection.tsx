@@ -1,23 +1,28 @@
+import api from "@/lib/axios";
+import { formatDate } from "@/lib/formatDate";
 import { useEffect, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 const HeroSection = () => {
   const [post,setPost] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/client`)
-    .then(res => res.json())
-    .then(data => {
-      setPost(data[0]);
-    })
-    .catch(err => console.error('Error fetching posts:', err));
+    const fetchPosts = async () => {
+      try {
+        const res = await api.get('/api/v1/posts/client')
+        setPost(res.data[0]);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Lỗi tải bài viết",
+          description:
+            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        });
+      }
+    }
+
+    fetchPosts();
   }, []);
 
   if (!post) {

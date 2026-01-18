@@ -8,8 +8,8 @@ const authMiddleware = require("../middlewares/auth.middleware")
 
 module.exports = (app) => {
     const version = "/api/v1"
-    app.use(version + "/posts",authMiddleware.requireAuth, postRoute)
-    app.use(version + "/categories",authMiddleware.requireAuth, categoryRoute)
+    app.use(version + "/posts", postRoute)
+    app.use(version + "/categories", categoryRoute)
     app.use(version + "/dashboard",authMiddleware.requireAuth, dashboardRoute)
     app.use(version + "/users",authMiddleware.requireAuth, userRoute)
     app.use(version + "/auth", authRoute)
