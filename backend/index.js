@@ -4,16 +4,20 @@ const cors = require("cors")
 var cookieParser = require('cookie-parser');
 
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT || 8000
 
 // read req.body
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
+// app.use(cors({
+//   origin: process.env.FE_URL, 
+//   credentials: true               
+// }));    
 app.use(cors({
-  origin: process.env.FE_URL, 
-  credentials: true               
-}));    
+  origin: true,
+  credentials: true
+}));
 
 app.use(cookieParser());
 
