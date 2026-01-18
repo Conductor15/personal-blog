@@ -26,7 +26,23 @@ const HeroSection = () => {
   }, []);
 
   if (!post) {
-    return <div className="pt-20 text-center">Loading...</div>;
+    return (
+    <section className="relative pt-20 md:pt-24">
+      <div className="blog-container">
+        <div className="relative aspect-[3/4] md:aspect-[4/3] lg:aspect-[16/9] overflow-hidden bg-muted animate-pulse">
+          
+          {/* Overlay Skeleton */}
+          <div className="absolute bottom-6 left-6 right-6 md:bottom-12 md:left-12 md:max-w-md bg-background/90 p-6 md:p-8 space-y-4">
+            <div className="h-4 w-24 bg-muted rounded" />
+            <div className="h-8 w-full bg-muted rounded" />
+            <div className="h-8 w-3/4 bg-muted rounded" />
+            <div className="h-4 w-40 bg-muted rounded" />
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
   }
 
 

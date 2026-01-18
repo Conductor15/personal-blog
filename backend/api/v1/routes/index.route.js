@@ -11,7 +11,7 @@ module.exports = (app) => {
     app.use(version + "/posts", postRoute)
     app.use(version + "/categories", categoryRoute)
     app.use(version + "/dashboard",authMiddleware.requireAuth, dashboardRoute)
-    app.use(version + "/users",authMiddleware.requireAuth, userRoute)
+    app.use(version + "/users", userRoute)
     app.use(version + "/auth", authRoute)
 
 }

@@ -2,6 +2,7 @@ import { Search, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SearchDialog from "./SearchDialog";
+import api from "@/lib/axios";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -15,6 +16,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
+  const [user,setUser] = useState(null);
 
   // Handle keyboard shortcut
   useEffect(() => {
@@ -29,15 +31,31 @@ const Header = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(()=> {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get(`api/v1/users/${import.meta.env.VITE_USER_ID}`)
+        setUser(res.data);
+      } catch (error) {
+        console.error("Fetch user failed", error);
+      }
+    } 
+
+    fetchUser();
+    },[])
+
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="blog-container">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
-            <Link to="/" className="uppercase font-serif text-2xl md:text-3xl font-medium tracking-[0.15em] text-foreground">
-              Tran
-            </Link>
+            <div className="min-w-[120px]">
+              <Link to="/" className="uppercase font-serif text-2xl">
+                {user?.blogName || "   "}
+              </Link>
+            </div>
+
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">

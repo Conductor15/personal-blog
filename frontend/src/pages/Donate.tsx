@@ -1,7 +1,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Heart, Copy, Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 const bankInfo = {
   name: "NGUYEN VAN A",
@@ -17,6 +18,19 @@ const momoInfo = {
 const Donate = () => {
   const [copiedBank, setCopiedBank] = useState(false);
   const [copiedMomo, setCopiedMomo] = useState(false);
+  const [user,setUser] = useState(null);
+  useEffect(()=> {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get(`api/v1/users/${import.meta.env.VITE_USER_ID}`)
+        setUser(res.data);
+      } catch (error) {
+        console.error("Fetch user failed", error);
+      }
+    } 
+
+    fetchUser();
+  },[])
 
   const copyToClipboard = (text: string, type: "bank" | "momo") => {
     navigator.clipboard.writeText(text);
@@ -54,70 +68,80 @@ const Donate = () => {
         {/* QR Codes Section */}
         <section className="py-12 md:py-16 bg-secondary/30">
           <div className="blog-container">
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {/* Bank QR */}
-              <div className="bg-background rounded-lg p-6 md:p-8 border border-border text-center">
-                <h3 className="font-serif text-xl font-medium text-foreground mb-6">
-                  Bank Transfer
-                </h3>
-                <div className="w-48 h-48 mx-auto bg-muted rounded-lg mb-6 flex items-center justify-center border-2 border-dashed border-border">
-                  <span className="text-muted-foreground text-sm">QR</span>
-                </div>
-                <div className="space-y-2 text-left">
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-medium text-foreground">Bank:</span> {bankInfo.bank}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-medium text-foreground">Account holder:</span> {bankInfo.name}
-                  </p>
-                  <div className="flex items-center justify-between">
+            {user && (
+              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                {/* Bank QR */}
+                <div className="bg-background rounded-lg p-6 md:p-8 border border-border text-center">
+                  <h3 className="font-serif text-xl font-medium text-foreground mb-6">
+                    Bank Transfer
+                  </h3>
+                  <div className="w-48 h-48 mx-auto bg-muted rounded-lg mb-6 flex items-center justify-center border-2 border-dashed border-border">
+                    <img
+                      src={user.bankQR}
+                      alt="QR code"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="space-y-2 text-left">
                     <p className="text-sm text-muted-foreground">
-                      <span className="font-medium text-foreground">Account number:</span> {bankInfo.account}
+                      <span className="font-medium text-foreground">Bank:</span> {user.bankName}
                     </p>
-                    <button
-                      onClick={() => copyToClipboard(bankInfo.account, "bank")}
-                      className="p-2 hover:bg-secondary rounded-md transition-colors"
-                    >
-                      {copiedBank ? (
-                        <Check className="w-4 h-4 text-green-500" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </button>
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">Account holder:</span> {user.fullName}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">Account number:</span> {user.bankNumber}
+                      </p>
+                      <button
+                        onClick={() => copyToClipboard(user.bankNumber, "bank")}
+                        className="p-2 hover:bg-secondary rounded-md transition-colors"
+                      >
+                        {copiedBank ? (
+                          <Check className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Momo QR */}
-              <div className="bg-background rounded-lg p-6 md:p-8 border border-border text-center">
-                <h3 className="font-serif text-xl font-medium text-foreground mb-6">
-                  MoMo Wallet
-                </h3>
-                <div className="w-48 h-48 mx-auto bg-muted rounded-lg mb-6 flex items-center justify-center border-2 border-dashed border-border">
-                  <span className="text-muted-foreground text-sm">QR</span>
-                </div>
-                <div className="space-y-2 text-left">
-                  <p className="text-sm text-muted-foreground">
-                    <span className="font-medium text-foreground">Name:</span> {momoInfo.name}
-                  </p>
-                  <div className="flex items-center justify-between">
+                {/* Momo QR */}
+                <div className="bg-background rounded-lg p-6 md:p-8 border border-border text-center">
+                  <h3 className="font-serif text-xl font-medium text-foreground mb-6">
+                    MoMo Wallet
+                  </h3>
+                  <div className="w-48 h-48 mx-auto bg-muted rounded-lg mb-6 flex items-center justify-center border-2 border-dashed border-border">
+                    <img
+                      src={user.momoQR}
+                      alt="QR code"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="space-y-2 text-left">
                     <p className="text-sm text-muted-foreground">
-                      <span className="font-medium text-foreground">Phone Number:</span> {momoInfo.phone}
+                      <span className="font-medium text-foreground">Name:</span> {user.fullName}
                     </p>
-                    <button
-                      onClick={() => copyToClipboard(momoInfo.phone, "momo")}
-                      className="p-2 hover:bg-secondary rounded-md transition-colors"
-                    >
-                      {copiedMomo ? (
-                        <Check className="w-4 h-4 text-green-500" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </button>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">Phone Number:</span> {user.momoNumber}
+                      </p>
+                      <button
+                        onClick={() => copyToClipboard(user.momoNumber, "momo")}
+                        className="p-2 hover:bg-secondary rounded-md transition-colors"
+                      >
+                        {copiedMomo ? (
+                          <Check className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <Copy className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </section>
 

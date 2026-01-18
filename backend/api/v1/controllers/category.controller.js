@@ -21,6 +21,7 @@ module.exports.detail = async (req, res) => {
     }
 }
 
+
 module.exports.create = async (req, res) => {
     try {
         const {name, image} = req.body

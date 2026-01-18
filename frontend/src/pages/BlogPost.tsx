@@ -2,36 +2,38 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Clock, Calendar, User, Share2, Facebook, Twitter } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ArticleCard from "@/components/ArticleCard";
-import { getArticleById, articles } from "@/data/articles";
+
+
 import { useEffect, useState } from "react";
-
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
+import api from "@/lib/axios";
+import { formatDate } from "@/lib/formatDate";
 
 const BlogPost = () => {
+  const [user,setUser] = useState(null);
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState(null);
-  useEffect(()=> {
-    const fetchPost = async () =>{
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/posts/client/${slug}`);
-        const data = await res.json()
-        setPost(data);
+  const [relatedPosts, setRelatedPosts] = useState([]);
+  const navigate = useNavigate();
 
-      } catch (error) {
-        console.error("Error fetching:", error);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [postRes, userRes] = await Promise.all([
+          api.get(`/api/v1/posts/client/${slug}`),
+          api.get(`/api/v1/users/${import.meta.env.VITE_USER_ID}`)
+        ]);
+
+        setPost(postRes.data);
+        setUser(userRes.data);
+      } catch (err) {
+        console.error(err);
       }
     };
-    fetchPost();
-  },[])
-  const navigate = useNavigate();
+
+    fetchData();
+  }, [slug]);
+  
 
   if (!post) {
     return (
@@ -59,7 +61,8 @@ const BlogPost = () => {
   // const relatedArticles = articles
   //   .filter(a => a.category === article.category && a.id !== article.id)
   //   .slice(0, 3);
-  const relatedArticles = post;
+  // const relatedArticles = post;
+  const shareUrl = window.location.href;
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,7 +89,7 @@ const BlogPost = () => {
             <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
               <span className="flex items-center gap-2">
                 <User className="w-4 h-4" />
-                Tran
+                {user?.blogName}
               </span>
               <span className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
@@ -109,7 +112,7 @@ const BlogPost = () => {
           </div>
 
           {/* Article Content */}
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             <div 
                 className="max-w-none 
                   [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6
@@ -130,15 +133,33 @@ const BlogPost = () => {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground uppercase tracking-[0.1em]">Share this article</span>
                 <div className="flex items-center gap-4">
-                  <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <button 
+                    onClick={() =>
+                      window.open(
+                        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                    className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                     <Facebook className="w-5 h-5" />
                   </button>
-                  <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <button 
+                    onClick={() =>
+                      window.open(
+                        `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                          shareUrl
+                        )}&text=${encodeURIComponent(post.title)}`,
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                    className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                     <Twitter className="w-5 h-5" />
                   </button>
-                  <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+                  {/* <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                     <Share2 className="w-5 h-5" />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -147,12 +168,12 @@ const BlogPost = () => {
             <div className="bg-secondary/30 rounded-sm p-6 md:p-8 mb-12">
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="font-serif text-2xl text-primary">Tran</span>
+                  <span className="font-serif text-2xl text-primary">{user?.blogName}</span>
                 </div>
                 <div>
-                  <h4 className="font-serif text-lg text-foreground mb-2">Written by Tran</h4>
+                  <h4 className="font-serif text-lg text-foreground mb-2">Written by {user?.blogName}</h4>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    A passionate writer exploring life's beautiful moments through words. Follow along for more stories about lifestyle, travel, and finding joy in everyday life.
+                    A passionate writer exploring life's beautiful moments through words.
                   </p>
                 </div>
               </div>
@@ -161,7 +182,7 @@ const BlogPost = () => {
         </article>
 
         {/* Related Articles */}
-        {relatedArticles.length > 0 && (
+        {/* {relatedArticles.length > 0 && (
           <section className="py-12 md:py-16 border-t border-border">
             <div className="blog-container">
               <h2 className="font-serif text-2xl md:text-3xl text-foreground text-center mb-10">
@@ -182,7 +203,7 @@ const BlogPost = () => {
               </div>
             </div>
           </section>
-        )}
+        )} */}
       </main>
       <Footer />
     </div>

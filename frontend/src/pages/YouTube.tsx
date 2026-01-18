@@ -66,7 +66,7 @@ const YouTube = () => {
                 YouTube
               </h1>
               <p className="text-muted-foreground text-lg mb-6">
-                Video content about lifestyle, travel, and mindful living.
+                Video content about lifestyle, study, travel, and mindful living.
               </p>
               <a
                 href="https://youtube.com"
@@ -82,7 +82,7 @@ const YouTube = () => {
         </section>
 
         {/* Featured Video */}
-        <section className="py-12 md:py-16 bg-secondary/30">
+        {/* <section className="py-12 md:py-16 bg-secondary/30">
           <div className="blog-container">
             <div className="grid lg:grid-cols-2 gap-8 items-center">
               <div className="relative group cursor-pointer image-zoom rounded-sm overflow-hidden">
@@ -112,10 +112,10 @@ const YouTube = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Video Grid */}
-        <section className="py-12 md:py-16">
+        {/* <section className="py-12 md:py-16">
           <div className="blog-container">
             <h2 className="font-serif text-2xl md:text-3xl font-medium text-foreground mb-8 md:mb-12">
               All Videos
@@ -149,7 +149,7 @@ const YouTube = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
       <Footer />
     </div>

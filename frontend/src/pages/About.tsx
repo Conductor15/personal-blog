@@ -1,9 +1,26 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Instagram, Youtube, Mail } from "lucide-react";
+import { Instagram, Youtube, Mail, Facebook } from "lucide-react";
 import featuredImg from "@/assets/featured-post.jpg";
+import { useEffect, useState } from "react";
+import api from "@/lib/axios";
 
 const About = () => {
+  const [user,setUser] = useState(null);
+
+  useEffect(()=> {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get(`api/v1/users/${import.meta.env.VITE_USER_ID}`)
+        setUser(res.data);
+      } catch (error) {
+        console.error("Fetch user failed", error);
+      }
+    } 
+
+    fetchUser();
+  },[])
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -16,59 +33,52 @@ const About = () => {
               <div className="order-2 lg:order-1">
                 <div className="relative">
                   <div className="absolute -inset-4 bg-accent/50 rounded-sm -z-10"></div>
-                  <img
-                    src={featuredImg}
-                    alt="About me"
-                    className="w-full aspect-[4/5] object-cover rounded-sm"
-                  />
+                  {user?.avatar &&
+                    (
+                    <img
+                      src={user.avatar}
+                      alt="About me"
+                      className="w-full aspect-[4/5] object-cover rounded-sm"
+                    />
+                    )
+                  }
                 </div>
               </div>
 
               {/* Content */}
               <div className="order-1 lg:order-2">
                 <span className="category-label">About Me</span>
-                <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mt-4 mb-6">
-                  Hello, I'm Sarah
-                </h1>
-                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    Welcome to Venal, a space where I share stories about mindful living, 
-                    travel adventures, and finding beauty in everyday moments.
-                  </p>
-                  <p>
-                    I started this blog as a creative outlet to document my journey towards 
-                    a more intentional life. What began as personal notes has grown into a 
-                    community of like-minded souls seeking balance and authenticity.
-                  </p>
-                  <p>
-                    When I'm not writing or creating content, you'll find me exploring local 
-                    farmers markets, practicing yoga, or planning my next travel adventure. 
-                    I believe in slow living, sustainable choices, and the power of small 
-                    daily rituals.
-                  </p>
-                </div>
+                {user && (
+                  <>
+                    <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mt-4 mb-6">
+                      Hello, I'm {user.blogName}
+                    </h1>
+
+                    <div className="space-y-4 text-muted-foreground leading-relaxed">
+                      <p>
+                        {user.about}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4 mt-8">
+                      <a
+                        href={user.instagramURL}
+                        className="flex items-center justify-center w-10 h-10 bg-secondary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                      >
+                        <Instagram className="w-5 h-5" />
+                      </a>
+                      <a
+                        href={user.facebookURL}
+                        className="flex items-center justify-center w-10 h-10 bg-secondary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                      >
+                        <Facebook className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </>)
+                }
 
                 {/* Social Links */}
-                <div className="flex items-center gap-4 mt-8">
-                  <a
-                    href="#"
-                    className="flex items-center justify-center w-10 h-10 bg-secondary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Instagram className="w-5 h-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center w-10 h-10 bg-secondary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Youtube className="w-5 h-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center w-10 h-10 bg-secondary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                  >
-                    <Mail className="w-5 h-5" />
-                  </a>
-                </div>
+        
               </div>
             </div>
           </div>
@@ -111,7 +121,7 @@ const About = () => {
         </section>
 
         {/* Contact Section */}
-        <section className="py-12 md:py-20">
+        {/* <section className="py-12 md:py-20">
           <div className="blog-container">
             <div className="max-w-xl mx-auto text-center">
               <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground mb-4">
@@ -148,7 +158,7 @@ const About = () => {
               </form>
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
       <Footer />
     </div>
