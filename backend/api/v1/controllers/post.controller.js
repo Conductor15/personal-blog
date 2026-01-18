@@ -1,18 +1,53 @@
 const Post = require("../models/post.model")
 const Category = require("../models/category.model")
 
-///api/v1/posts/client/top-viewed=3
+///api/v1/posts/client/topViewed=3&&search=keyword&&limit=10&&sortKey=createdAt&&sortValue=desc
 module.exports.indexClient = async (req, res) => {
     try {
-        const topViewed = req.query.topViewed;
-        if(topViewed){
-            const posts = await Post.find({deleted: false, status: 'published'}).sort({ views: -1 }).limit(topViewed);;
-            res.status(200).json(posts);
-            return;
+        //Top view
+        
+        const {
+            topViewed,
+            search,
+            limit,
+            sortKey,
+            sortValue,
+        } = req.query;
+
+
+        const filter = {
+            deleted: false,
+            status: "published",
+        };
+
+        // ================= SEARCH =================
+        if (search && search.trim()) {
+            const regex = new RegExp(search, "i");
+            filter.$or = [
+                { title: regex },
+                { description: regex }
+            ];
         }
 
-        const posts = await Post.find({deleted: false, status: 'published'}).sort({ createdAt: -1 });
+        // ================= SORT =================
+        let sort = {
+        };
+        if (topViewed) {
+            sort = { views: -1 };
+        } else {
+            if(sortKey&&sortValue){
+                sort = {
+                    [sortKey]: sortValue === "asc" ? 1 : -1,
+                };
+            }
+            sort = {createdAt: -1}
+        }
+
+        const posts = await Post.find(filter)
+                                .sort(sort)
+                                .limit(Number(topViewed || limit));
         res.status(200).json(posts);
+        return;
 
     } catch (error) {
         res.json({message: error.message})

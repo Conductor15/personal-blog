@@ -27,10 +27,13 @@ export default function Dashboard() {
 
   if (!dashboardData) {
     return (
-      <AdminLayout>
-        <p>Đang tải dashboard...</p>
-      </AdminLayout>
-    );
+    <AdminLayout>
+      <div className="flex items-center justify-center h-[60vh] text-muted-foreground">
+        <span className="animate-spin mr-2">⏳</span>
+        Đang tải dữ liệu dashboard...
+      </div>
+    </AdminLayout>
+  );
   }
 
 
