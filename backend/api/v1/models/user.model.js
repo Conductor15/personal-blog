@@ -19,10 +19,7 @@ const userSchema = new mongoose.Schema({
     instagramURL: String,
     youtubeURL: String,
 
-    featurePostId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post"
-    },
+    featurePostSlug: String,
 
     deleted: {
         type: Boolean,

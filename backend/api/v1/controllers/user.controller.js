@@ -11,3 +11,35 @@ module.exports.profile = async (req, res) => {
     }
 }
 
+module.exports.editProfile = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const {
+            blogName,
+            about,
+            avatar,
+            youtubeURL,
+            instagramURL,
+            facebookURL,
+            featurePostSlug
+        } = req.body;
+
+
+        await User.updateOne({_id: id, deleted: false},{
+            blogName:blogName,
+            about: about,
+            avatar:avatar,
+            youtubeURL: youtubeURL,
+            instagramURL: instagramURL,
+            facebookURL : facebookURL,
+            featurePostSlug: featurePostSlug
+        });
+
+        return res.status(200).json({
+            message: "Update successfully"
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
