@@ -86,12 +86,55 @@ JWT_SECRET=...
 JWT_EXPIRE=...
 ```
 
+Tạo collection `user` in mongoDB and add your info record :
+
+```Record
+    email:String,
+    password: String,
+    blogName: String,
+    fullName:String,
+    about: String,
+    avatar: String,
+
+    bankName: String,
+    bankNumber: String,
+    bankQR: String,
+
+    momoNumber: String,
+    momoQR: String,
+
+    facebookURL: String,
+    instagramURL: String,
+    youtubeURL: String,
+
+    featurePostSlug: String,
+    deleted:false
+```
+
+
+
 ### 3. Frontend
 
 ```bash
 cd frontend
 npm install
 npm run dev
+```
+
+Tạo file `.env`:
+
+```env
+VITE_API_BASE_URL= ...
+
+VITE_CLOUDINARY_CLOUD_NAME=...
+VITE_CLOUDINARY_UPLOAD_PRESET=...
+VITE_CLOUDINARY_API_URL=...
+
+VITE_DEFAULT_IMG=...
+VITE_USER_ID=...
+
+
+
 ```
 
 Frontend chạy tại: `http://localhost:8080`
