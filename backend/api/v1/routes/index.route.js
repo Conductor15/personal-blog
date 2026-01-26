@@ -7,6 +7,10 @@ const authRoute = require("./auth.route")
 const authMiddleware = require("../middlewares/auth.middleware")
 
 module.exports = (app) => {
+    app.get("/ping", (req, res) => {
+        res.status(200).send("Server is alive!");
+    });
+    
     const version = "/api/v1"
     app.use(version + "/posts", postRoute)
     app.use(version + "/categories", categoryRoute)
