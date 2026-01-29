@@ -63,7 +63,7 @@ const HeroSection = () => {
               {post.title}
             </h1>
             <p className="article-meta">
-              By Tran / {formatDate(post.createdAt)}
+              {post.categoryId?.name} / {formatDate(post.createdAt)}
             </p>
           </div>
         </div>

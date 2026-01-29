@@ -31,7 +31,7 @@ const ArticleCard = ({ slug, image, category, title, author, date, featured = fa
             {title}
           </h3>
           <p className="article-meta">
-            By {author} / {date}
+            {date}
           </p>
         </div>
       </Link>

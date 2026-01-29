@@ -129,9 +129,9 @@ const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
                     <h4 className="font-serif text-sm md:text-base text-foreground line-clamp-1 mt-0.5">
                       {article.title}
                     </h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    {/* <p className="text-xs text-muted-foreground mt-0.5">
                       By Tran
-                    </p>
+                    </p> */}
                   </div>
                 </button>
               ))}

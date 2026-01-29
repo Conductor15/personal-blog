@@ -44,6 +44,7 @@ module.exports.indexClient = async (req, res) => {
         }
 
         const posts = await Post.find(filter)
+                                .populate("categoryId", "name")
                                 .sort(sort)
                                 .limit(Number(topViewed || limit));
         res.status(200).json(posts);
