@@ -98,6 +98,23 @@ module.exports.detailClient = async (req, res) => {
     }
 }
 
+module.exports.feature = async (req, res) => {
+    try {
+        const slug = req.params.slug;
+
+        const post = await Post.findOne({ deleted: false, status: "published", slug: slug })
+                                .populate("categoryId", "name slug");
+
+        if (!post) {
+            return res.status(404).json({ message: "Post không tồn tại" });
+        }
+
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 module.exports.create = async (req, res) => {
     try {
         const {title, excerpt, content, category, status, thumbnail} = req.body

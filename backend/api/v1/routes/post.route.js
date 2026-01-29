@@ -7,6 +7,7 @@ router.get("/client" ,controller.indexClient);
 router.get("/admin" ,authMiddleware.requireAuth, controller.indexAdmin);
 router.get("/:slug" ,controller.detail);
 router.get("/client/:slug" ,controller.detailClient);
+router.get("/feature/:slug" ,controller.feature);
 router.post("/create" ,authMiddleware.requireAuth, controller.create);
 
 router.patch("/:slug" , authMiddleware.requireAuth, controller.delete);

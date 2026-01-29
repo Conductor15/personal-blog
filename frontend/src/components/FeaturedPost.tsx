@@ -1,4 +1,3 @@
-import featuredImage from "@/assets/featured-post.jpg";
 import api from "@/lib/axios";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -31,7 +30,7 @@ const FeaturedPost = () => {
     const fetchPost = async () => {
       try {
         const res = await api.get(
-          `/api/v1/posts/client/${user.featurePostSlug}`
+          `/api/v1/posts/feature/${user.featurePostSlug}`
         );
         setFeaturedPost(res.data);
       } catch (error) {
