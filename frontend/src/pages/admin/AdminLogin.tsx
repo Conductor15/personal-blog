@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { AuthContext } from "@/contexts/AuthContext";
 import api from "@/lib/axios";
 
@@ -30,10 +30,20 @@ const Login = () => {
         user: res.data.user,
       });
 
-      toast.success("Đăng nhập thành công!");
+      toast({
+        title: "Đăng nhập thành công!",
+        description: "Chào mừng bạn đã quay trở lại",
+        className: "border-l-4 border-success"
+      });
       navigate("/admin");
     } catch (error: any) {
-      toast.error(error.message || "Có lỗi xảy ra");
+      const msg = error.response?.data?.message || "Sai tài khoản hoặc mật khẩu";
+      toast({
+        title: "Đăng nhập thất bại!",
+        description: msg,
+        className: "border-l-4 border-destructive"
+      });
+      
     } finally {
       setIsLoading(false);
     }
