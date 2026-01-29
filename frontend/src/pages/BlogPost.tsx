@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { formatDate } from "@/lib/formatDate";
 import PageTransition from "@/components/PageTransition";
+import ArticleCard from "@/components/ArticleCard";
 
 const BlogPost = () => {
   const [user,setUser] = useState(null);
@@ -25,8 +26,22 @@ const BlogPost = () => {
           api.get(`/api/v1/users/${import.meta.env.VITE_USER_ID}`)
         ]);
 
+        const currentPost = postRes.data;
         setPost(postRes.data);
         setUser(userRes.data);
+
+        if (currentPost?.categoryId?._id || currentPost?.categoryId) {
+          const catId = currentPost.categoryId?._id || currentPost.categoryId;
+          const relatedRes = await api.get(`/api/v1/posts/client`, {
+            params: {
+              categoryId: catId,
+              limit: 6
+            }
+          });
+          
+          const filteredRelated = relatedRes.data.filter(p => p._id !== currentPost._id);
+          setRelatedPosts(filteredRelated);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -58,11 +73,6 @@ const BlogPost = () => {
     );
   }
 
-  // Get related articles (same category, excluding current)
-  // const relatedArticles = articles
-  //   .filter(a => a.category === article.category && a.id !== article.id)
-  //   .slice(0, 3);
-  // const relatedArticles = post;
   const shareUrl = window.location.href;
 
   return (
@@ -184,14 +194,14 @@ const BlogPost = () => {
           </article>
 
           {/* Related Articles */}
-          {/* {relatedArticles.length > 0 && (
+          {relatedPosts.length > 0 && (
             <section className="py-12 md:py-16 border-t border-border">
               <div className="blog-container">
                 <h2 className="font-serif text-2xl md:text-3xl text-foreground text-center mb-10">
-                  Related Articles
+                  Related Posts
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {relatedArticles.map((article) => (
+                  {relatedPosts.map((article) => (
                     <ArticleCard
                       key={article._id}
                       slug={article.slug}
@@ -199,13 +209,13 @@ const BlogPost = () => {
                       category={article.categoryId?.name}
                       title={article.title}
                       author="Tran"
-                      date={article.createdAt}
+                      date={formatDate(article.createdAt)}
                     />
                   ))}
                 </div>
               </div>
             </section>
-          )} */}
+          )}
         </main>
         <Footer />
       </div>

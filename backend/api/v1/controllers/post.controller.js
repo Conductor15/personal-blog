@@ -1,7 +1,7 @@
 const Post = require("../models/post.model")
 const Category = require("../models/category.model")
 
-///api/v1/posts/client/topViewed=3&&search=keyword&&limit=10&&sortKey=createdAt&&sortValue=desc
+///api/v1/posts/client/topViewed=3&&search=keyword&&limit=10&&sortKey=createdAt&&sortValue=desc&categoryId=
 module.exports.indexClient = async (req, res) => {
     try {
         //Top view
@@ -12,6 +12,7 @@ module.exports.indexClient = async (req, res) => {
             limit,
             sortKey,
             sortValue,
+            categoryId,
         } = req.query;
 
 
@@ -19,6 +20,10 @@ module.exports.indexClient = async (req, res) => {
             deleted: false,
             status: "published",
         };
+
+        if(categoryId){
+            filter.categoryId = categoryId
+        }
 
         // ================= SEARCH =================
         if (search && search.trim()) {
