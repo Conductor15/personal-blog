@@ -62,7 +62,7 @@ const FeaturedPost = () => {
 
           {/* Content */}
           <div className="lg:py-8">
-            <span className="category-label">Featured Story</span>
+            <span className="category-label">The Feature</span>
             <h2 className="article-title text-3xl md:text-4xl lg:text-5xl mt-4 mb-6 leading-tight">
               {featuredPost.title}
             </h2>

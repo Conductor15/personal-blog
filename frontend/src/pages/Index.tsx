@@ -4,20 +4,23 @@ import FeaturedPost from "@/components/FeaturedPost";
 import CategoriesSection from "@/components/CategoriesSection";
 import ArticlesGrid from "@/components/ArticlesGrid";
 import Footer from "@/components/Footer";
+import PageTransition from "@/components/PageTransition";
 
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main>
-        <HeroSection />
-        <FeaturedPost />
-        <CategoriesSection />
-        <ArticlesGrid />
-      </main>
-      <Footer />
-    </div>
+    <PageTransition>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main>
+          <HeroSection />
+          <FeaturedPost />
+          <CategoriesSection />
+          <ArticlesGrid />
+        </main>
+        <Footer />
+      </div>
+    </PageTransition>
   );
 };
 
