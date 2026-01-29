@@ -9,6 +9,7 @@ module.exports.login = async (req, res) => {
         const {email,password} = req.body;
         const user = await User.findOne({deleted:false, email:email});
         if(!user){
+            console.log("bug here");
             return res.status(401).json({
                 message: "Email không tồn tại"
             })

@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import SearchDialog from "./SearchDialog";
 import api from "@/lib/axios";
 
+
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/blog", label: "Blog" },
@@ -42,7 +43,8 @@ const Header = () => {
     } 
 
     fetchUser();
-    },[])
+  },[])
+
 
   return (
     <>

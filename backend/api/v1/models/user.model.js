@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     about: String,
     avatar: String,
 
+    //Title icon web
+    blogTitle: String,
+    blogIcon: String,
+
     bankName: String,
     bankNumber: String,
     bankQR: String,
