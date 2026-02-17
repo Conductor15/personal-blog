@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
@@ -7,6 +7,7 @@ import api from "@/lib/axios";
 import { toast } from "@/hooks/use-toast";
 import PageTransition from "@/components/PageTransition";
 import { Helmet } from "react-helmet-async";
+import PageTitle from "@/components/PageTitle";
 
 
 const Blog = () => {
@@ -70,9 +71,7 @@ const Blog = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`Blog - Tran's Space`}</title>
-      </Helmet>
+      <PageTitle title="Blog" />
       <PageTransition>
         <div className="min-h-screen bg-background">
           <Header />

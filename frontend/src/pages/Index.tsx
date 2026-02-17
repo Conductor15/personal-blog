@@ -5,15 +5,13 @@ import CategoriesSection from "@/components/CategoriesSection";
 import ArticlesGrid from "@/components/ArticlesGrid";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
-import { Helmet } from 'react-helmet-async';
+import PageTitle from "@/components/PageTitle";
 
 const Index = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`Home - Tran's Space`}</title>
-      </Helmet>
+      <PageTitle title="" />
       <PageTransition>
         <div className="min-h-screen bg-background">
           <Header />

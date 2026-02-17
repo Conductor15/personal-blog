@@ -3,6 +3,9 @@ import Footer from "@/components/Footer";
 import { Play, ExternalLink } from "lucide-react";
 import PageTransition from "@/components/PageTransition";
 import { Helmet } from "react-helmet-async";
+import PageTitle from "@/components/PageTitle";
+import { useContext } from "react";
+import { SiteContext } from "@/contexts/SiteContext";
 
 const videos = [
   {
@@ -56,11 +59,10 @@ const videos = [
 ];
 
 const YouTube = () => {
+  const {site} = useContext(SiteContext);
   return (
     <>
-      <Helmet>
-        <title>{`Youtube - Tran's Space`}</title>
-      </Helmet>
+      <PageTitle title="YouTube" />
       <PageTransition>
         <div className="min-h-screen bg-background">
           <Header />
@@ -76,7 +78,7 @@ const YouTube = () => {
                     Pausing time through video. Reflections on finding balance in a busy world.
                   </p>
                   <a
-                    href="https://youtube.com"
+                    href={site.youtubeURL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-sm uppercase tracking-[0.15em] font-medium rounded-full hover:opacity-90 transition-opacity"

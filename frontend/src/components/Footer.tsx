@@ -1,32 +1,20 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram } from "lucide-react";
-import { useEffect, useState } from "react";
-import api from "@/lib/axios";
+import { useContext, useEffect, useState } from "react";
+import { SiteContext } from "@/contexts/SiteContext";
 
 const Footer = () => {
-  const [user, setUser] = useState(null);
+  const {site} = useContext(SiteContext)
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await api.get(`/api/v1/users/${import.meta.env.VITE_USER_ID}`);
-        setUser(res.data);
-      } catch (error) {
-        console.error("Fetch user failed", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   return (
     <footer className="py-12 md:py-16 border-t border-border">
       <div className="blog-container">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
-          {user?.blogName && 
+          {site?.blogName && 
             <Link to="/" className="font-serif text-2xl font-medium tracking-tight text-foreground">
-              {user.blogName}
+              {site.blogName}
             </Link>
           }
 
@@ -45,9 +33,9 @@ const Footer = () => {
 
           {/* Social */}
           <div className="flex items-center gap-4">
-            {user?.facebookURL && (
+            {site?.facebookURL && (
               <a
-                href={user.facebookURL}
+                href={site.facebookURL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground"
@@ -56,9 +44,9 @@ const Footer = () => {
               </a>
             )}
 
-            {user?.instagramURL && (
+            {site?.instagramURL && (
               <a
-                href={user.instagramURL}
+                href={site.instagramURL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground"

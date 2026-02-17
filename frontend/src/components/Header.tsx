@@ -1,8 +1,8 @@
 import { Search, Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SearchDialog from "./SearchDialog";
-import api from "@/lib/axios";
+import { SiteContext } from "@/contexts/SiteContext";
 
 
 const navLinks = [
@@ -17,7 +17,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const location = useLocation();
-  const [user,setUser] = useState(null);
+  const {site} = useContext(SiteContext);
 
   // Handle keyboard shortcut
   useEffect(() => {
@@ -32,18 +32,6 @@ const Header = () => {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  useEffect(()=> {
-    const fetchUser = async () => {
-      try {
-        const res = await api.get(`api/v1/users/${import.meta.env.VITE_USER_ID}`)
-        setUser(res.data);
-      } catch (error) {
-        console.error("Fetch user failed", error);
-      }
-    } 
-
-    fetchUser();
-  },[])
 
 
   return (
@@ -54,13 +42,13 @@ const Header = () => {
             {/* Logo */}
             <div className="min-w-[120px]">
               <Link to="/" className="uppercase font-serif text-2xl">
-                {user?.blogName || "   "}
+                {site?.blogName || "   "}
               </Link>
             </div>
 
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}

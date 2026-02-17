@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     //Title icon web
     blogTitle: String,
     blogIcon: String,
+    blogDescription: String,
 
     bankName: String,
     bankNumber: String,

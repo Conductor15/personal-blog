@@ -2,17 +2,16 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Clock, Calendar, User, Share2, Facebook, Twitter } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { formatDate } from "@/lib/formatDate";
 import PageTransition from "@/components/PageTransition";
 import ArticleCard from "@/components/ArticleCard";
-import { Helmet } from 'react-helmet-async';
+import PageTitle from "@/components/PageTitle";
+import { SiteContext } from "@/contexts/SiteContext";
 
 const BlogPost = () => {
-  const [user,setUser] = useState(null);
+  const {site} = useContext(SiteContext);
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState(null);
   const [relatedPosts, setRelatedPosts] = useState([]);
@@ -22,14 +21,12 @@ const BlogPost = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [postRes, userRes] = await Promise.all([
+        const [postRes] = await Promise.all([
           api.get(`/api/v1/posts/client/${slug}`),
-          api.get(`/api/v1/users/${import.meta.env.VITE_USER_ID}`)
         ]);
 
         const currentPost = postRes.data;
         setPost(postRes.data);
-        setUser(userRes.data);
 
         if (currentPost?.categoryId?._id || currentPost?.categoryId) {
           const catId = currentPost.categoryId?._id || currentPost.categoryId;
@@ -55,6 +52,7 @@ const BlogPost = () => {
   if (!post) {
     return (
         <div className="min-h-screen bg-background">
+          <PageTitle title={post?.title || "Loading"} />
           <Header />
           <main className="pt-24 md:pt-28">
             <div className="blog-container py-24 text-center">
@@ -78,11 +76,7 @@ const BlogPost = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`${post?.title} - ${user?.blogTitle}`}</title>
-        <meta name="description" content="Minimalist blog" />
-        <link rel="icon" type="image/png" sizes="32x32" href={user?.blogIcon} />
-      </Helmet>
+      <PageTitle title={post.title} />
       <PageTransition>
         <div className="min-h-screen bg-background">
           <Header />
@@ -108,7 +102,7 @@ const BlogPost = () => {
                 <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
                   <span className="flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    {user?.blogName}
+                    {site?.blogName}
                   </span>
                   <span className="flex items-center gap-2">
                     <Calendar className="w-4 h-4" />
@@ -187,12 +181,12 @@ const BlogPost = () => {
                 <div className="bg-secondary/30 rounded-sm p-6 md:p-8 mb-12">
                   <div className="flex items-start gap-4">
                     <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="font-serif text-2xl text-primary">{user?.blogName}</span>
+                      <span className="font-serif text-2xl text-primary">{site?.blogName}</span>
                     </div>
                     <div>
-                      <h4 className="font-serif text-lg text-foreground mb-2">Written by {user?.blogName}</h4>
+                      <h4 className="font-serif text-lg text-foreground mb-2">Written by {site?.blogName}</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
-                        A passionate writer exploring life's beautiful moments through words.
+                        {site?.blogDescription}
                       </p>
                     </div>
                   </div>

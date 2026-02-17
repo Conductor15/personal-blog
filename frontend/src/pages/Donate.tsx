@@ -1,28 +1,19 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Heart, Copy, Check } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import api from "@/lib/axios";
 import PageTransition from "@/components/PageTransition";
-import { Helmet } from "react-helmet-async";
+import PageTitle from "@/components/PageTitle";
+import { SiteContext } from "@/contexts/SiteContext";
 
 
 const Donate = () => {
   const [copiedBank, setCopiedBank] = useState(false);
   const [copiedMomo, setCopiedMomo] = useState(false);
-  const [user,setUser] = useState(null);
-  useEffect(()=> {
-    const fetchUser = async () => {
-      try {
-        const res = await api.get(`api/v1/users/${import.meta.env.VITE_USER_ID}`)
-        setUser(res.data);
-      } catch (error) {
-        console.error("Fetch user failed", error);
-      }
-    } 
+  const {site} = useContext(SiteContext);
 
-    fetchUser();
-  },[])
+  
 
   const copyToClipboard = (text: string, type: "bank" | "momo") => {
     navigator.clipboard.writeText(text);
@@ -37,9 +28,7 @@ const Donate = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`Donate - Tran's Space`}</title>
-      </Helmet>
+      <PageTitle title="Donate" />
       <PageTransition>
         <div className="min-h-screen bg-background">
           <Header />
@@ -52,11 +41,10 @@ const Donate = () => {
                     <Heart className="w-8 h-8 text-primary" />
                   </div>
                   <h1 className="font-serif text-4xl md:text-5xl font-medium text-foreground mb-4">
-                    Support My Work
+                    Buy Me a Coffee
                   </h1>
                   <p className="text-muted-foreground text-lg leading-relaxed">
-                    Your support helps me create more content about mindful living, travel stories, 
-                    and beautiful everyday moments. Every contribution makes a difference.
+                    This blog is a small, quiet corner where I share what I’m learning about living slowly and intentionally. If these words have ever felt comforting or helpful to you, your support simply helps me keep this space going.
                   </p>
                 </div>
               </div>
@@ -65,7 +53,7 @@ const Donate = () => {
             {/* QR Codes Section */}
             <section className="py-12 md:py-16 bg-secondary/30">
               <div className="blog-container">
-                {user && (
+                {site && (
                   <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                     {/* Bank QR */}
                     <div className="bg-background rounded-lg p-6 md:p-8 border border-border text-center">
@@ -74,24 +62,24 @@ const Donate = () => {
                       </h3>
                       <div className="w-48 h-48 mx-auto bg-muted rounded-lg mb-6 flex items-center justify-center border-2 border-dashed border-border">
                         <img
-                          src={user.bankQR}
+                          src={site.bankQR}
                           alt="QR code"
                           className="w-full h-full object-contain"
                         />
                       </div>
                       <div className="space-y-2 text-left">
                         <p className="text-sm text-muted-foreground">
-                          <span className="font-medium text-foreground">Bank:</span> {user.bankName}
+                          <span className="font-medium text-foreground">Bank:</span> {site.bankName}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          <span className="font-medium text-foreground">Account holder:</span> {user.fullName}
+                          <span className="font-medium text-foreground">Account holder:</span> {site.fullName}
                         </p>
                         <div className="flex items-center justify-between">
                           <p className="text-sm text-muted-foreground">
-                            <span className="font-medium text-foreground">Account number:</span> {user.bankNumber}
+                            <span className="font-medium text-foreground">Account number:</span> {site.bankNumber}
                           </p>
                           <button
-                            onClick={() => copyToClipboard(user.bankNumber, "bank")}
+                            onClick={() => copyToClipboard(site.bankNumber, "bank")}
                             className="p-2 hover:bg-secondary rounded-md transition-colors"
                           >
                             {copiedBank ? (
@@ -111,21 +99,21 @@ const Donate = () => {
                       </h3>
                       <div className="w-48 h-48 mx-auto bg-muted rounded-lg mb-6 flex items-center justify-center border-2 border-dashed border-border">
                         <img
-                          src={user.momoQR}
+                          src={site.momoQR}
                           alt="QR code"
                           className="w-full h-full object-contain"
                         />
                       </div>
                       <div className="space-y-2 text-left">
                         <p className="text-sm text-muted-foreground">
-                          <span className="font-medium text-foreground">Name:</span> {user.fullName}
+                          <span className="font-medium text-foreground">Name:</span> {site.fullName}
                         </p>
                         <div className="flex items-center justify-between">
                           <p className="text-sm text-muted-foreground">
-                            <span className="font-medium text-foreground">Phone Number:</span> {user.momoNumber}
+                            <span className="font-medium text-foreground">Phone Number:</span> {site.momoNumber}
                           </p>
                           <button
-                            onClick={() => copyToClipboard(user.momoNumber, "momo")}
+                            onClick={() => copyToClipboard(site.momoNumber, "momo")}
                             className="p-2 hover:bg-secondary rounded-md transition-colors"
                           >
                             {copiedMomo ? (

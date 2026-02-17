@@ -1,32 +1,17 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Instagram, Youtube, Mail, Facebook } from "lucide-react";
-import { useEffect, useState } from "react";
-import api from "@/lib/axios";
+import { useContext} from "react";
 import PageTransition from "@/components/PageTransition";
-import { Helmet } from "react-helmet-async";
+import PageTitle from "@/components/PageTitle";
+import { SiteContext } from "@/contexts/SiteContext";
 
 const About = () => {
-  const [user,setUser] = useState(null);
-
-  useEffect(()=> {
-    const fetchUser = async () => {
-      try {
-        const res = await api.get(`api/v1/users/${import.meta.env.VITE_USER_ID}`)
-        setUser(res.data);
-      } catch (error) {
-        console.error("Fetch user failed", error);
-      }
-    } 
-
-    fetchUser();
-  },[])
+  const {site} = useContext(SiteContext);
 
   return (
     <>
-      <Helmet>
-        <title>{`About - Tran's Space`}</title>
-      </Helmet>
+      <PageTitle title="About" />
       <PageTransition>
         <div className="min-h-screen bg-background">
           <Header />
@@ -39,10 +24,10 @@ const About = () => {
                   <div className="order-2 lg:order-1">
                     <div className="relative">
                       <div className="absolute -inset-4 bg-accent/50 rounded-sm -z-10"></div>
-                      {user?.avatar &&
+                      {site?.avatar &&
                         (
                         <img
-                          src={user.avatar}
+                          src={site.avatar}
                           alt="About me"
                           className="w-full aspect-[4/5] object-cover rounded-sm"
                         />
@@ -54,27 +39,27 @@ const About = () => {
                   {/* Content */}
                   <div className="order-1 lg:order-2">
                     <span className="category-label">About Me</span>
-                    {user && (
+                    {site && (
                       <>
                         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mt-4 mb-6">
-                          Hello, I'm {user.blogName}
+                          Hello, I'm {site.blogName}
                         </h1>
 
                         <div className="space-y-4 text-muted-foreground leading-relaxed">
                           <p>
-                            {user.about}
+                            {site.about}
                           </p>
                         </div>
 
                         <div className="flex items-center gap-4 mt-8">
                           <a
-                            href={user.instagramURL}
+                            href={site.instagramURL}
                             className="flex items-center justify-center w-10 h-10 bg-secondary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
                           >
                             <Instagram className="w-5 h-5" />
                           </a>
                           <a
-                            href={user.facebookURL}
+                            href={site.facebookURL}
                             className="flex items-center justify-center w-10 h-10 bg-secondary rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
                           >
                             <Facebook className="w-5 h-5" />
