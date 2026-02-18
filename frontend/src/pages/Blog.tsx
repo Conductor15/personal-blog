@@ -7,10 +7,15 @@ import api from "@/lib/axios";
 import { toast } from "@/hooks/use-toast";
 import PageTransition from "@/components/PageTransition";
 import PageTitle from "@/components/PageTitle";
+import { useSearchParams } from "react-router-dom";
 
 
 const Blog = () => {
-  const [activeCategory, setActiveCategory] = useState("all");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categorySlugFromUrl = searchParams.get("category") || "all";
+
+  const [activeSlug, setActiveSlug] = useState(categorySlugFromUrl);
+
   const [categories, setCategories] = useState([]);
 
   const [posts,setPosts] = useState([]);
@@ -18,6 +23,7 @@ const Blog = () => {
   const [hasMore, setHasMore] = useState(true);
   const LIMIT = 6;
 
+  // ================= FETCH CATEGORIES =================
   useEffect(() => {
     const fetchCategory = async () => {
       try {
@@ -36,38 +42,53 @@ const Blog = () => {
     fetchCategory();
   }, []);
 
-  const fetchPosts = async (pageNumber = 1, categoryId = activeCategory) => {
-      try {
-        const res = await api.get("/api/v1/posts/client", {
-          params: {
-            page: pageNumber,
-            limit: LIMIT,
-            categoryId: categoryId !== "all" ? categoryId : undefined,
-          },
-        });
+  // ================= SYNC URL -> STATE =================
+  useEffect(() => {
+    const slug = searchParams.get("category") || "all";
+    setActiveSlug(slug);
+  }, [searchParams]);
 
-        if (pageNumber === 1) {
-          setPosts(res.data.data);
-        } else {
-          setPosts(prev => [...prev, ...res.data.data]);
-        }
 
-        setHasMore(res.data.pagination.hasMore);
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Tải bài viết thất bại",
-          description:
-            error.response?.data?.message || "Có lỗi xảy ra",
-        });
+  
+  // ================= FETCH POSTS =================
+  const fetchPosts = async (pageNumber = 1, slug = activeSlug) => {
+    try {
+      const category = categories.find((c) => c.slug === slug);
+      const categoryId = slug !== "all" ? category?._id : undefined;
+
+      const res = await api.get("/api/v1/posts/client", {
+        params: {
+          page: pageNumber,
+          limit: LIMIT,
+          categoryId,
+        },
+      });
+
+      if (pageNumber === 1) {
+        setPosts(res.data.data);
+      } else {
+        setPosts((prev) => [...prev, ...res.data.data]);
       }
-    };
+
+      setHasMore(res.data.pagination.hasMore);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Tải bài viết thất bại",
+        description:
+          error.response?.data?.message || "Có lỗi xảy ra",
+      });
+    }
+  };
 
 
-  useEffect(()=> {
+  // ================= REFRESH WHEN SLUG OR CATEGORY LIST CHANGE =================
+  useEffect(() => {
+    if (categories.length === 0) return;
+
     setPage(1);
-    fetchPosts(1);
-  },[activeCategory])
+    fetchPosts(1, activeSlug);
+  }, [activeSlug, categories]);
 
 
   const handleLoadMore = () => {
@@ -76,9 +97,15 @@ const Blog = () => {
     fetchPosts(nextPage);
   };
 
-  const handleCategoryChange = (categoryId: string) => {
-    setActiveCategory(categoryId);
+  // ================= CHANGE CATEGORY =================
+  const handleCategoryChange = (slug) => {
     setPage(1);
+
+    if (slug === "all") {
+      setSearchParams({});
+    } else {
+      setSearchParams({ category: slug });
+    }
   };
 
   return (
@@ -109,7 +136,7 @@ const Blog = () => {
                   <button
                     onClick={() => handleCategoryChange("all")}
                     className={`px-4 py-2 text-xs uppercase tracking-[0.15em] font-medium rounded-full transition-colors ${
-                      activeCategory === "all"
+                      activeSlug  === "all"
                         ? "bg-primary text-primary-foreground"
                         : "bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground"
                     }`}
@@ -119,9 +146,9 @@ const Blog = () => {
                   {categories.map((category) => (
                     <button
                       key={category.slug}
-                      onClick={() => handleCategoryChange(category._id)}
+                      onClick={() => handleCategoryChange(category.slug)}
                       className={`px-4 py-2 text-xs uppercase tracking-[0.15em] font-medium rounded-full transition-colors ${
-                        category._id === activeCategory
+                        category.slug === activeSlug
                           ? "bg-primary text-primary-foreground"
                           : "bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground"
                       }`}

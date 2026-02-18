@@ -39,7 +39,7 @@ const ArticlesGrid = () => {
         {/* Section Header */}
         <div className="text-center mb-12 md:mb-16">
           <span className="inline-block px-4 py-2 text-xs uppercase tracking-[0.2em] font-medium text-foreground border border-border rounded-full">
-            Popular Stories
+            Most Read
           </span>
         </div>
 

@@ -1,12 +1,15 @@
+import { Link } from "react-router-dom";
+
 interface CategoryCardProps {
   image: string;
   title: string;
   count: number;
+  slug: string;
 }
 
-const CategoryCard = ({ image, title, count }: CategoryCardProps) => {
+const CategoryCard = ({ image, title, count, slug }: CategoryCardProps) => {
   return (
-    <a href="#" className="group block">
+    <Link to={`/blog?category=${slug}`} className="group block">
       <div className="image-zoom rounded-sm overflow-hidden mb-4">
         <img
           src={image}
@@ -22,7 +25,7 @@ const CategoryCard = ({ image, title, count }: CategoryCardProps) => {
           {count}
         </span>
       </div>
-    </a>
+    </Link>
   );
 };
 

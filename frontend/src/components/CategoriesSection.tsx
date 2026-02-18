@@ -31,7 +31,13 @@ const CategoriesSection = () => {
       <div className="blog-container">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {categories.map((category) => (
-            <CategoryCard key={category.slug} image={category.image} title={category.name} count={category.postCount} />
+            <CategoryCard
+              key={category.slug}
+              image={category.image}
+              title={category.name}
+              count={category.postCount}
+              slug={category.slug}
+            />
           ))}
         </div>
       </div>
