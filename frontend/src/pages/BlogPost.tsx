@@ -14,6 +14,8 @@ const BlogPost = () => {
   const {site} = useContext(SiteContext);
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState([]);
   const navigate = useNavigate();
 
@@ -27,6 +29,7 @@ const BlogPost = () => {
 
         const currentPost = postRes.data;
         setPost(postRes.data);
+        // console.log(currentPost);
 
         if (currentPost?.categoryId?._id || currentPost?.categoryId) {
           const catId = currentPost.categoryId?._id || currentPost.categoryId;
@@ -37,38 +40,56 @@ const BlogPost = () => {
             }
           });
           
-          const filteredRelated = relatedRes.data.filter(p => p._id !== currentPost._id);
+          const filteredRelated = relatedRes.data.data.filter(p => p._id !== currentPost._id);
           setRelatedPosts(filteredRelated);
         }
       } catch (err) {
         console.error(err);
+        // setNotFound(true);
+      } finally {
+        setLoading(false); 
       }
     };
 
     fetchData();
   }, [slug]);
-  
 
-  if (!post) {
+  if (loading) {
     return (
-        <div className="min-h-screen bg-background">
-          <PageTitle title={post?.title || "Loading"} />
-          <Header />
-          <main className="pt-24 md:pt-28">
-            <div className="blog-container py-24 text-center">
-              <h1 className="font-serif text-4xl text-foreground mb-4">Article Not Found</h1>
-              <p className="text-muted-foreground mb-8">The article you're looking for doesn't exist.</p>
-              <Link
-                to="/blog"
-                className="inline-flex items-center gap-2 text-primary hover:underline"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Blog
-              </Link>
-            </div>
-          </main>
-          <Footer />
-        </div>
+      <div className="min-h-screen bg-background">
+        <PageTitle title="Loading..." />
+        <Header />
+        <main className="pt-24 md:pt-28">
+          <div className="blog-container py-24 text-center">
+            <div className="animate-spin mx-auto rounded-full h-10 w-10 border-4 border-primary border-t-transparent"></div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+  
+  if (notFound) {
+    return (
+      <div className="min-h-screen bg-background">
+        <PageTitle title="Not Found" />
+        <Header />
+        <main className="pt-24 md:pt-28">
+          <div className="blog-container py-24 text-center">
+            <h1 className="font-serif text-4xl text-foreground mb-4">
+              Post Not Found
+            </h1>
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-2 text-primary hover:underline"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Blog
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
     );
   }
 

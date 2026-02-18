@@ -116,18 +116,14 @@ const Blog = () => {
           <Header />
           <main className="pt-24 md:pt-28">
             {/* Page Header */}
-            <section className="py-12 md:py-16 border-b border-border">
-              <div className="blog-container">
-                <div className="text-center max-w-2xl mx-auto">
-                  <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-foreground mb-4">
-                    Slow Growth
-                  </h1>
-                  <p className="text-muted-foreground text-lg">
-                    Productivity without burnout. Minimalism without emptiness. Stories on growing quietly.
-                  </p>
-                </div>
-              </div>
-            </section>
+            <div className="flex items-center justify-center gap-6 mb-6">
+              <div className="w-16 h-px bg-border" />
+              <h1 className="font-serif text-4xl md:text-5xl font-medium">
+                Archive
+              </h1>
+              <div className="w-16 h-px bg-border" />
+            </div>
+  
 
             {/* Filter Tags */}
             <section className="py-8 border-b border-border">
