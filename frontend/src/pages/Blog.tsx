@@ -6,67 +6,79 @@ import { formatDate } from "@/lib/formatDate";
 import api from "@/lib/axios";
 import { toast } from "@/hooks/use-toast";
 import PageTransition from "@/components/PageTransition";
-import { Helmet } from "react-helmet-async";
 import PageTitle from "@/components/PageTitle";
 
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("all");
-  const [visibleCount, setVisibleCount] = useState(6);
   const [categories, setCategories] = useState([]);
+
   const [posts,setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const LIMIT = 6;
 
-
-  useEffect(()=> {
-    const fetchCategory = async () =>{
+  useEffect(() => {
+    const fetchCategory = async () => {
       try {
-        const res = await api.get(`/api/v1/categories`);
+        const res = await api.get("/api/v1/categories");
         setCategories(res.data);
-
       } catch (error) {
         toast({
           variant: "destructive",
           title: "Tải danh mục thất bại",
           description:
-            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+            error.response?.data?.message || "Có lỗi xảy ra",
         });
       }
     };
 
-    const fetchPost = async () =>{
-      try {
-        const res = await api.get(`/api/v1/posts/client`);
-        setPosts(res.data);
+    fetchCategory();
+  }, []);
 
+  const fetchPosts = async (pageNumber = 1, categoryId = activeCategory) => {
+      try {
+        const res = await api.get("/api/v1/posts/client", {
+          params: {
+            page: pageNumber,
+            limit: LIMIT,
+            categoryId: categoryId !== "all" ? categoryId : undefined,
+          },
+        });
+
+        if (pageNumber === 1) {
+          setPosts(res.data.data);
+        } else {
+          setPosts(prev => [...prev, ...res.data.data]);
+        }
+
+        setHasMore(res.data.pagination.hasMore);
       } catch (error) {
         toast({
           variant: "destructive",
           title: "Tải bài viết thất bại",
           description:
-            error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+            error.response?.data?.message || "Có lỗi xảy ra",
         });
       }
     };
 
-    fetchPost();
-    fetchCategory();
-  },[])
 
+  useEffect(()=> {
+    setPage(1);
+    fetchPosts(1);
+  },[activeCategory])
 
-  const filteredArticles = activeCategory === "all"
-    ? posts
-    : posts.filter(post => post.categoryId?._id === activeCategory);
-
-  const displayedArticles = filteredArticles.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredArticles.length;
 
   const handleLoadMore = () => {
-    setVisibleCount(prev => prev + 6);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchPosts(nextPage);
   };
 
   const handleCategoryChange = (categoryId: string) => {
     setActiveCategory(categoryId);
-    setVisibleCount(6);
+    setPage(1);
   };
 
   return (
@@ -124,10 +136,10 @@ const Blog = () => {
             {/* Articles Grid */}
             <section className="py-12 md:py-16">
               <div className="blog-container">
-                {displayedArticles.length > 0 ? (
+                {posts.length > 0 ? (
                   <>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-                      {displayedArticles.map((post) => (
+                      {posts.map((post) => (
                         <ArticleCard
                           key={post._id}
                           slug={post.slug}
@@ -154,7 +166,7 @@ const Blog = () => {
                   </>
                 ) : (
                   <div className="text-center py-12">
-                    <p className="text-muted-foreground">No articles found in this category.</p>
+                    <p className="text-muted-foreground">No posts found in this category.</p>
                   </div>
                 )}
               </div>

@@ -10,8 +10,14 @@ const ArticlesGrid = () => {
   useEffect(()=> {
     const fetchPosts = async () =>{
       try {
-        const res = await api.get("/api/v1/posts/client?topViewed=3")
-        setPosts(res.data);
+        const res = await api.get("/api/v1/posts/client", {
+        params: {
+          topViewed: 3,
+          limit:3
+        },
+      });
+
+      setPosts(res.data.data);
 
       } catch (error) {
         toast({

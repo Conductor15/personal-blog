@@ -28,7 +28,6 @@ const CategoriesSection = () => {
 
   return (
     <section className="py-12 md:py-16 bg-secondary/50">
-      <>{categories.length === 0 && <p className="text-center">Không có danh mục nào</p>}</>
       <div className="blog-container">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {categories.map((category) => (

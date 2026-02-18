@@ -11,8 +11,13 @@ const HeroSection = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await api.get('/api/v1/posts/client')
-        setPost(res.data[0]);
+        const res = await api.get('/api/v1/posts/client',{
+          params: {
+            page: 1,
+            limit: 1
+          }
+        })
+        setPost(res.data.data[0]);
       } catch (error) {
         toast({
           variant: "destructive",

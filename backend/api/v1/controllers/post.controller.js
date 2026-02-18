@@ -7,9 +7,10 @@ module.exports.indexClient = async (req, res) => {
         //Top view
         
         const {
+            page = 1,
+            limit = 6,
             topViewed,
             search,
-            limit,
             sortKey,
             sortValue,
             categoryId,
@@ -48,11 +49,28 @@ module.exports.indexClient = async (req, res) => {
             sort = {createdAt: -1}
         }
 
-        const posts = await Post.find(filter)
-                                .populate("categoryId", "name")
-                                .sort(sort)
-                                .limit(Number(topViewed || limit));
-        res.status(200).json(posts);
+        const skip = (page - 1) * limit;
+
+
+
+        const [posts, total] = await Promise.all([
+            Post.find(filter)
+                .populate("categoryId", "name")
+                .sort(sort)
+                .skip(skip)
+                .limit(Number(limit)),
+            Post.countDocuments(filter),
+            ]);
+        res.status(200).json({
+            data: posts,
+            pagination: {
+                page: Number(page),
+                limit: Number(limit),
+                total,
+                hasMore: skip + posts.length < total,
+            },
+        });
+        
         return;
 
     } catch (error) {

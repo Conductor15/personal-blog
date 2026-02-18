@@ -75,35 +75,39 @@ const About = () => {
               </div>
             </section>
 
-            {/* Values Section */}
+            {/* Current Focus Section */}
             <section className="py-12 md:py-16 bg-secondary/30">
               <div className="blog-container">
                 <div className="text-center mb-12">
                   <h2 className="font-serif text-3xl md:text-4xl font-medium text-foreground">
-                    What I Believe In
+                    What I'm Working On
                   </h2>
                 </div>
+
                 <div className="grid md:grid-cols-3 gap-8 md:gap-12">
                   {[
                     {
-                      title: "Mindful Living",
-                      description: "Being present in each moment and making intentional choices that align with our values.",
+                      title: "Building Products",
+                      description:
+                        "Designing and shipping real-world projects that solve practical problems.",
                     },
                     {
-                      title: "Sustainable Beauty",
-                      description: "Finding elegance in simplicity and choosing quality over quantity in all aspects of life.",
+                      title: "AI & Web Development",
+                      description:
+                        "Exploring the intersection of machine learning and modern web systems.",
                     },
                     {
-                      title: "Authentic Connection",
-                      description: "Building genuine relationships and sharing stories that inspire and uplift others.",
+                      title: "Writing & Sharing",
+                      description:
+                        "Documenting what I learn so others can build faster and smarter.",
                     },
-                  ].map((value) => (
-                    <div key={value.title} className="text-center">
+                  ].map((item) => (
+                    <div key={item.title} className="text-center">
                       <h3 className="font-serif text-xl font-medium text-foreground mb-3">
-                        {value.title}
+                        {item.title}
                       </h3>
                       <p className="text-muted-foreground leading-relaxed">
-                        {value.description}
+                        {item.description}
                       </p>
                     </div>
                   ))}
