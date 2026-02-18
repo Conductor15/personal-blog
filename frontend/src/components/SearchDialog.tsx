@@ -36,7 +36,7 @@ const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
           signal: controller.signal,
         });
 
-        setResults(res.data);
+        setResults(res.data.data);
       } catch (err) {
         if (err.name !== "AbortError") {
           console.error(err);
