@@ -45,7 +45,7 @@ export default function Settings() {
     const fetchPost = async () => {
       try {
         const res = await api.get(`/api/v1/posts/client`);
-        setPosts(res.data);
+        setPosts(res.data.data);
       } catch (error) {
         console.error("Fetch posts failed", error);
       }
@@ -138,7 +138,7 @@ export default function Settings() {
                 onChange={(e) => setFeaturePostSlug(e.target.value)}
                 className="h-10 rounded-md border border-input bg-background px-3 text-sm"
               >
-                <option value="">— Lựa chọn —</option>
+                <option value="" disabled>— Select the feature —</option>
 
                 {posts?.map((post) => (
                   <option key={post.slug} value={post.slug}>
@@ -146,12 +146,6 @@ export default function Settings() {
                   </option>
                 ))}
               </select>
-
-              {featurePostSlug && (
-                <p className="text-sm text-muted-foreground">
-                  Slug: <code>{featurePostSlug}</code>
-                </p>
-              )}
             </div>
 
 
