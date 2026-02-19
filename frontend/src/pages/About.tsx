@@ -85,23 +85,7 @@ const About = () => {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-                  {[
-                    {
-                      title: "Building Products",
-                      description:
-                        "Designing and shipping real-world projects that solve practical problems.",
-                    },
-                    {
-                      title: "AI & Web Development",
-                      description:
-                        "Exploring the intersection of machine learning and modern web systems.",
-                    },
-                    {
-                      title: "Writing & Sharing",
-                      description:
-                        "Documenting what I learn so others can build faster and smarter.",
-                    },
-                  ].map((item) => (
+                  {site?.workingOn?.map((item) => (
                     <div key={item.title} className="text-center">
                       <h3 className="font-serif text-xl font-medium text-foreground mb-3">
                         {item.title}

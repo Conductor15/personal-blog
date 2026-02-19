@@ -26,6 +26,16 @@ const userSchema = new mongoose.Schema({
 
     featurePostSlug: String,
 
+    workingOn: {
+        type: [
+            {
+            title: String,
+            description: String
+            }
+        ],
+        default: []
+    },
+
     deleted: {
         type: Boolean,
         default: false
