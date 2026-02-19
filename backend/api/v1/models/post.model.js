@@ -15,7 +15,8 @@ const postSchema = new mongoose.Schema({
     slug: {
         type:String,
         slug:"title",
-        unique:true
+        unique:true,
+        permanent: true
     },
     views: {
         type:Number,
