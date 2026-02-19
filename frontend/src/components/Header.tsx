@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SearchDialog from "./SearchDialog";
 import { SiteContext } from "@/contexts/SiteContext";
+import { Sun, Moon } from "lucide-react";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -18,9 +19,8 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
 
   const location = useLocation();
-  const { site } = useContext(SiteContext);
+  const { site, theme, toggleTheme } = useContext(SiteContext);
 
-  // ⌨️ Cmd/Ctrl + K
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -111,6 +111,21 @@ const Header = () => {
                   transition-all duration-300"
                 >
                 <Search className="w-5 h-5" />
+              </button>
+
+              {/* Dark mode toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full text-muted-foreground
+                hover:text-primary
+                hover:bg-primary/5
+                transition-all duration-300"
+              >
+                {theme === "dark" ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
               </button>
 
               {/* Mobile Menu */}

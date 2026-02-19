@@ -7,6 +7,11 @@ export const SiteWrapper = ({ children }) => {
   const [site, setSite] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
+
+
   useEffect(() => {
     const fetchSite = async () => {
       try {
@@ -24,8 +29,19 @@ export const SiteWrapper = ({ children }) => {
     fetchSite();
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+  };
+
   return (
-    <SiteContext.Provider value={{ site, loading }}>
+    <SiteContext.Provider value={{ site, loading, theme, toggleTheme }}>
       {children}
     </SiteContext.Provider>
   );
