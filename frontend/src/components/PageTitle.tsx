@@ -21,7 +21,7 @@ const PageTitle = ({ title }) => {
         }
       />
       
-      <link rel="icon" href={site?.blogIcon || "/webicon.png"} />
+      <link rel="icon" href={site?.blogIcon || "/white.png"} />
     </Helmet>
   );
 };

@@ -75,7 +75,7 @@ const YouTube = () => {
                     YouTube
                   </h1>
                   <p className="text-muted-foreground text-lg mb-6">
-                    Pausing time through video. Reflections on finding balance in a busy world.
+                    Videos about habits, minimalism, everyday life, and happiness.
                   </p>
                   <a
                     href={site.youtubeURL}
