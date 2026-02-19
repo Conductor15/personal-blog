@@ -116,36 +116,6 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             </NavLink>
           ))}
 
-          {/* Settings Section */}
-          <div className="mt-4">
-            <button
-              onClick={() => setShowPageSettings(!showPageSettings)}
-              className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
-            >
-              <span>Cài đặt trang</span>
-              <span className={cn(
-                "transition-transform",
-                showPageSettings ? "rotate-180" : ""
-              )}>▼</span>
-            </button>
-            
-            {showPageSettings && (
-              <div className="mt-1 space-y-1">
-                {pageSettings.map((item) => (
-                  <NavLink
-                    key={item.title}
-                    to={item.url}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
-                    activeClassName="bg-primary/10 text-primary font-medium hover:bg-primary/15"
-                  >
-                    <item.icon className="h-4 w-4 flex-shrink-0" />
-                    <span className="font-body text-sm">{item.title}</span>
-                  </NavLink>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* General Settings */}
           <NavLink
             to="/admin/settings"

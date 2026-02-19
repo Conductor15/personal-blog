@@ -21,7 +21,11 @@ module.exports.editProfile = async (req, res) => {
             youtubeURL,
             instagramURL,
             facebookURL,
-            featurePostSlug
+            featurePostSlug,
+            workingOn,
+            blogTitle,
+            blogDescription,
+            blogIcon
         } = req.body;
 
 
@@ -32,7 +36,11 @@ module.exports.editProfile = async (req, res) => {
             youtubeURL: youtubeURL,
             instagramURL: instagramURL,
             facebookURL : facebookURL,
-            featurePostSlug: featurePostSlug
+            featurePostSlug: featurePostSlug,
+            workingOn: workingOn,
+            blogTitle: blogTitle,
+            blogDescription: blogDescription,
+            blogIcon: blogIcon
         });
 
         return res.status(200).json({

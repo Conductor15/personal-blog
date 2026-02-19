@@ -16,11 +16,6 @@ import Posts from "./pages/admin/Posts";
 import Categories from "./pages/admin/Categories";
 import Analytics from "./pages/admin/Analytics";
 import Settings from "./pages/admin/Settings";
-import AboutPageSettings from "./pages/admin/settings/AboutPageSettings";
-import DonatePageSettings from "./pages/admin/settings/DonatePageSettings";
-import YoutubePageSettings from "./pages/admin/settings/YoutubePageSettings";
-import BlogPageSettings from "./pages/admin/settings/BlogPageSettings";
-import HomePageSettings from "./pages/admin/settings/HomePageSettings";
 import NewPost from "./pages/admin/NewPost";
 import PostDetail from "./pages/admin/PostDetail";
 import PostEdit from "./pages/admin/PostEdit";
@@ -59,11 +54,6 @@ const App = () => (
               <Route path="/admin/categories" element={<Categories />} />
               <Route path="/admin/analytics" element={<Analytics />} />
               <Route path="/admin/settings" element={<Settings />} />
-              <Route path="/admin/settings/home" element={<HomePageSettings />} />
-              <Route path="/admin/settings/blog" element={<BlogPageSettings />} />
-              <Route path="/admin/settings/youtube" element={<YoutubePageSettings />} />
-              <Route path="/admin/settings/donate" element={<DonatePageSettings />} />
-              <Route path="/admin/settings/about" element={<AboutPageSettings />} />
             </Route>
             {/* ================= NOT FOUND ================= */}
             <Route path="*" element={<NotFound />} />
