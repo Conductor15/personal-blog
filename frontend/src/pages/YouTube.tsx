@@ -78,7 +78,7 @@ const YouTube = () => {
                     Videos about habits, minimalism, everyday life, and happiness.
                   </p>
                   <a
-                    href={site.youtubeURL}
+                    href={site?.youtubeURL || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-sm uppercase tracking-[0.15em] font-medium rounded-full hover:opacity-90 transition-opacity"
