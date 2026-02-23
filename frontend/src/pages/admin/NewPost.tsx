@@ -245,7 +245,7 @@ export default function NewPost() {
                 setShowCrop(false);
               }}
             >
-              Crop & Upload
+              Save
             </Button>
           </div>
         </div>

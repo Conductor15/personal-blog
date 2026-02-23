@@ -16,6 +16,9 @@ import { toast } from "@/hooks/use-toast";
 import { RichTextEditor } from "@/components/admin/RichTextEditter";
 import api from "@/lib/axios";
 import { uploadImage } from "@/lib/uploadImage";
+import Cropper from "react-easy-crop";
+import { useCallback } from "react";
+import { getCroppedImg } from "@/lib/utils";
 
 
 export default function PostEdit() {
@@ -31,6 +34,12 @@ export default function PostEdit() {
 
   const [catList, setCatList] = useState([])
   const navigate = useNavigate()
+
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [showCrop, setShowCrop] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
 
   useEffect(()=> {
     if (!slug) return;
@@ -198,20 +207,20 @@ export default function PostEdit() {
 
             <div>
               <label className="text-sm font-medium">Ảnh đại diện</label>
-              <Input type="file" 
+              <Input
+                type="file"
                 accept="image/*"
                 onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) {
-                  return;
-                };
-                
-                setUploading(true)
-                const url = await uploadImage(file);
-                setUploading(false)
-                
-                setThumbnailUrl(url);
-              }}
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    setImageSrc(reader.result as string);
+                    setShowCrop(true);
+                  };
+                  reader.readAsDataURL(file);
+                }}
               />
 
               {thumbnailUrl && (
@@ -240,6 +249,53 @@ export default function PostEdit() {
           </div>
         </div>
       </div>
+
+      {showCrop && imageSrc && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]">
+          <div className="bg-white p-4 rounded-xl w-[500px]">
+            <div className="relative w-full h-[300px]">
+              <Cropper
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                aspect={16 / 9}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={(croppedArea, croppedAreaPixels) => {
+                  setCroppedAreaPixels(croppedAreaPixels);
+                }}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={() => setShowCrop(false)}>
+                Huỷ
+              </Button>
+
+              <Button
+                onClick={async () => {
+                  if (!croppedAreaPixels || !imageSrc) return;
+
+                  const blob = await getCroppedImg(imageSrc, croppedAreaPixels);
+
+                  const file = new File([blob], "thumbnail.jpg", {
+                    type: blob.type,
+                  });
+
+                  setUploading(true);
+                  const url = await uploadImage(file);
+                  setUploading(false);
+
+                  setThumbnailUrl(url);
+                  setShowCrop(false);
+                }}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }
