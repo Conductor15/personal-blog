@@ -156,7 +156,7 @@ export function MobileHeader({ onMenuClick }: { onMenuClick: () => void }) {
         <Menu className="h-5 w-5" />
       </Button>
       <h1 className="ml-3 font-heading text-lg font-semibold text-foreground">
-        TRAN Admin
+        Admin
       </h1>
     </header>
   );
