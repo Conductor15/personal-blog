@@ -8,9 +8,9 @@ const PageTitle = ({ title }) => {
   return (
     <Helmet>
       {title ? (
-        <title>{title} - {site?.blogTitle || "Blog"}</title>
+        <title>{title} - {site?.blogTitle || "BLOG"}</title>
       ) : (
-        <title>{site?.blogTitle || "Blog"}</title>
+        <title>{site?.blogTitle || "BLOG"}</title>
       )}
 
       <meta
