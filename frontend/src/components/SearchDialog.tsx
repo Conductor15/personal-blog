@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { articles, searchArticles, Article } from "@/data/articles";
+import { Dialog, DialogContent, DialogTitle, DialogDescription  } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import api from "@/lib/axios";
 
 interface SearchDialogProps {
@@ -69,6 +69,12 @@ const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl p-0 gap-0 bg-background border-border overflow-hidden [&>button]:hidden">
+        <VisuallyHidden>
+          <DialogTitle>Search Articles</DialogTitle>
+          <DialogDescription>
+            Search and navigate to blog articles.
+          </DialogDescription>
+        </VisuallyHidden>
         {/* Search Input */}
         <div className="flex items-center border-b border-border px-4">
           <Search className="w-5 h-5 text-muted-foreground shrink-0" />
