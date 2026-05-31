@@ -9,9 +9,23 @@ const port = process.env.PORT || 8000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:8080",
+  "https://lineupyourshoes.vercel.app",
+];
+
 app.use(cors({
-  origin: true,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS: " + origin));
+    }
+  },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 app.use(cookieParser());
@@ -24,9 +38,7 @@ database.connect();
 routerApiVer1(app);
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "Personal Blog API is running",
-  });
+  res.json({ message: "API is running" });
 });
 
 if (require.main === module) {
