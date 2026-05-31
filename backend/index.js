@@ -6,28 +6,18 @@ const cookieParser = require("cookie-parser");
 const app = express();
 const port = process.env.PORT || 8000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:8080",
-  "https://lineupyourshoes.vercel.app",
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS: " + origin));
-    }
-  },
+const corsOptions = {
+  origin: true,
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-}));
+};
 
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 const routerApiVer1 = require("./api/v1/routes/index.route");
