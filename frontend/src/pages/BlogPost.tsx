@@ -22,12 +22,22 @@ const BlogPost = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setNotFound(false);
+      setPost(null);
+      setRelatedPosts([]);
+
       try {
         const [postRes] = await Promise.all([
           api.get(`/api/v1/posts/client/${slug}`),
         ]);
 
         const currentPost = postRes.data;
+        if (!currentPost || typeof currentPost === "string") {
+          setNotFound(true);
+          return;
+        }
+
         setPost(postRes.data);
         // console.log(currentPost);
 
@@ -45,7 +55,7 @@ const BlogPost = () => {
         }
       } catch (err) {
         console.error(err);
-        // setNotFound(true);
+        setNotFound(true);
       } finally {
         setLoading(false); 
       }
@@ -75,17 +85,31 @@ const BlogPost = () => {
         <PageTitle title="Not Found" />
         <Header />
         <main className="pt-24 md:pt-28">
-          <div className="blog-container py-24 text-center">
-            <h1 className="font-serif text-4xl text-foreground mb-4">
-              Post Not Found
-            </h1>
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 text-primary hover:underline"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Blog
-            </Link>
+          <div className="blog-container py-24 md:py-32">
+            <div className="mx-auto max-w-xl text-center">
+              <span className="category-label">Not Found</span>
+              <h1 className="font-serif text-4xl md:text-5xl text-foreground mt-4 mb-5">
+                This post is no longer available
+              </h1>
+              <p className="text-muted-foreground leading-relaxed mb-8">
+                The post may have been moved, unpublished, or the link may be incorrect.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  to="/blog"
+                  className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Browse Posts
+                </Link>
+                <Link
+                  to="/"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] transition-colors hover:bg-secondary"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back Home
+                </Link>
+              </div>
+            </div>
           </div>
         </main>
         <Footer />
