@@ -138,10 +138,10 @@ const BlogPost = () => {
             </div>
 
             {/* Article Header */}
-            <article className="blog-container">
+            <article className="blog-container font-article">
               <header className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
                 <span className="category-label">{post.categoryId?.name}</span>
-                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-foreground mt-4 mb-6 leading-tight">
+                <h1 className="font-article text-3xl md:text-4xl lg:text-5xl font-light text-foreground mt-4 mb-6 leading-tight">
                   {post.title}
                 </h1>
                 <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
@@ -173,10 +173,10 @@ const BlogPost = () => {
               <div className="max-w-4xl mx-auto">
                 <div 
                     className="max-w-none 
-                      [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:mb-4 [&_h1]:mt-6
-                      [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:mb-3 [&_h2]:mt-5
-                      [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4
-                      [&_p]:mb-3 [&_p]:leading-relaxed
+                      [&_h1]:font-article [&_h1]:text-3xl [&_h1]:font-semibold [&_h1]:mb-4 [&_h1]:mt-6
+                      [&_h2]:font-article [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:mb-3 [&_h2]:mt-5
+                      [&_h3]:font-article [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:mb-2 [&_h3]:mt-4
+                      [&_p]:mb-4 [&_p]:leading-8
                       [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-3
                       [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-3
                       [&_li]:mb-1
@@ -226,10 +226,10 @@ const BlogPost = () => {
                 <div className="bg-secondary/30 rounded-sm p-6 md:p-8 mb-12">
                   <div className="flex items-start gap-4">
                     <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="font-serif text-2xl text-primary">{site?.blogName}</span>
+                      <span className="font-article text-2xl text-primary">{site?.blogName}</span>
                     </div>
                     <div>
-                      <h4 className="font-serif text-lg text-foreground mb-2">Written by {site?.blogName}</h4>
+                      <h4 className="font-article text-lg text-foreground mb-2">Written by {site?.blogName}</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">
                         {site?.blogDescription}
                       </p>

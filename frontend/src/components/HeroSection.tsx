@@ -57,10 +57,10 @@ const HeroSection = () => {
         <div className="grid min-h-[520px] items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
           <div className="animate-fade-in-up">
             <span className="category-label">The Latest</span>
-            <h1 className="article-title mt-5 max-w-2xl text-4xl md:text-5xl lg:text-6xl">
+            <h1 className="article-title mt-5 max-w-2xl text-3xl md:text-4xl lg:text-5xl">
               {post.title}
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
               {post.description}
             </p>
 

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -47,6 +47,7 @@
     /* Typography */
     --font-serif: 'Cormorant Garamond', Georgia, serif;
     --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-article: 'Literata', Georgia, serif;
 
     /* Shadows */
     --shadow-soft: 0 4px 20px -4px hsl(30 10% 15% / 0.08);
@@ -189,6 +190,10 @@
 
   .font-sans {
     font-family: var(--font-sans);
+  }
+
+  .font-article {
+    font-family: var(--font-article);
   }
 
   .hover-lift {

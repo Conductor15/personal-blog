@@ -178,7 +178,7 @@ export function RichTextEditor({ content, onChange, placeholder = "Bắt đầu 
       {/* Editor Content */}
       <EditorContent 
         editor={editor} 
-        className="p-4 min-h-[300px] focus-within:outline-none 
+        className="font-article p-4 min-h-[300px] focus-within:outline-none 
           [&_.ProseMirror]:outline-none 
           [&_.ProseMirror]:min-h-[280px]
           [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-muted-foreground 
@@ -187,18 +187,19 @@ export function RichTextEditor({ content, onChange, placeholder = "Bắt đầu 
           [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none 
           [&_.ProseMirror_p.is-editor-empty:first-child::before]:h-0
           [&_.ProseMirror_h1]:text-3xl
-          [&_.ProseMirror_h1]:font-bold
+          [&_.ProseMirror_h1]:font-semibold
           [&_.ProseMirror_h1]:mb-4
           [&_.ProseMirror_h1]:mt-6
           [&_.ProseMirror_h2]:text-2xl
-          [&_.ProseMirror_h2]:font-bold
+          [&_.ProseMirror_h2]:font-semibold
           [&_.ProseMirror_h2]:mb-3
           [&_.ProseMirror_h2]:mt-5
           [&_.ProseMirror_h3]:text-xl
           [&_.ProseMirror_h3]:font-semibold
           [&_.ProseMirror_h3]:mb-2
           [&_.ProseMirror_h3]:mt-4
-          [&_.ProseMirror_p]:mb-3
+          [&_.ProseMirror_p]:mb-4
+          [&_.ProseMirror_p]:leading-8
           [&_.ProseMirror_ul]:list-disc
           [&_.ProseMirror_ul]:pl-6
           [&_.ProseMirror_ul]:mb-3
