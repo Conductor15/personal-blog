@@ -1,0 +1,21 @@
+{
+  "name": "Line Up Your Shoes",
+  "short_name": "LUYS",
+  "description": "A calm corner for habits, reflection, and intentional living.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#15130f",
+  "theme_color": "#102015",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
