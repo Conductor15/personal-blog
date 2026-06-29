@@ -1,0 +1,41 @@
+name: Deploy Backend to GCP VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy backend
+        run: |
+          ssh ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+            cd ~/personal-blog
+
+            echo "Pull latest code..."
+            git pull origin main
+
+            echo "Go to backend..."
+            cd backend
+
+            echo "Install deps..."
+            npm install || npm ci || pip install -r requirements.txt || true
+
+            echo "Restart backend..."
+            pm2 restart backend || pm2 restart all || systemctl restart backend || true
+
+            echo "DONE DEPLOY BACKEND"
+          EOF
