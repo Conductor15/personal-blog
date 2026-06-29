@@ -8,7 +8,7 @@ const authMiddleware = require("../middlewares/auth.middleware")
 
 module.exports = (app) => {
     app.get("/ping", (req, res) => {
-        res.status(200).send("I love you Tran!");
+        res.status(200).send("HT ngu ngon :3!");
     });
     
     const version = "/api/v1"
